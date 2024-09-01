@@ -1,0 +1,59 @@
+.login-card{
+    max-width: 500px;
+    padding: 50px 80px;
+}
+
+/*scott@logncoding.com*/
+#login{
+    background: linear-gradient(170deg, #c6a652, #f97a3f);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.form-control{
+    height: 45px;
+    font-size: 16px;
+}
+.btn-login{
+    background-color: #c6a652;
+    color: white;
+    font-size: 18px;
+    width: 100%;
+    border-radius: 50px;
+    margin-top: 15px;
+}
+.btn-login:hover{
+    background-color:#f97a3f;
+    color: white;
+}
+
+.hero{
+    background: url('../images/hero-bg.jpg') no-repeat center center;
+    height: 100vh;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: white;
+    position:relative;
+    z-index:1
+}
+.hero::before{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0 ,0, 0.25);
+    z-index:-1;
+}
+.hero h1{
+    font-size: 56px;
+    z-index:999;
+}
+.hero p{
+    font-size:25px;
+     z-index:999;
+}
