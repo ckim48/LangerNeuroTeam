@@ -77,4 +77,4 @@ def task():
     return render_template('task1.html')
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8000) # run our web application
+    app.run(debug=True) # run our web application
