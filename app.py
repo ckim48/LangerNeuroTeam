@@ -76,5 +76,9 @@ def logout():
 def task():
     return render_template('task1.html')
 
+@app.route('/task2')
+def task2():
+    return render_template('task2.html')
+
 if __name__ == '__main__':
     app.run(debug=True) # run our web application

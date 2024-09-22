@@ -1,0 +1,123 @@
+{% extends 'header.html' %}
+{% block task2 %}
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+       .game-container{
+        max-width: 600px;
+        margin: 50px auto;
+        text-align:center;
+       }
+      .game-area{
+        height: 400px;
+        width: 100%;
+        border: 2px solid black;
+        border-radius: 10px;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 25px;
+        font-weight: bold;
+        margin-bottom: 20px;
+      }
+      #start-btn{
+        width: 150px;
+        margin-top: 20px;
+      }
+    </style>
+</head>
+<body>
+  <div class="container game-container">
+    <h1 class="text-center mb-4">Stop and Go Game</h1>
+    <div class="game-area" id ="game-area">
+        Press the Button!
+    </div>
+    <button class="btn btn-primary" id="start-btn">Start</button>
+    <p id="feedback" class="text-center"></p>
+    <p class="text-center">Response Time: <span id="response-time">0</span> ms</p>
+  </div>
+  <script>
+
+      let trials = []; // list that contains the problems --> ex) ["Go", "NGO", "GO",,...]
+      let currentTrial = 0;
+      let responseTime = 0;
+      let startTime;
+      let timeoutId;
+      const trialDelay = 1000; // 1-second delay between trials
+
+      document.getElementById('start-btn').addEventListener('click', startGame);
+      document.addEventListener('keydown', handleKeydown);
+
+      function startGame(){
+          // Reset Game State
+          currentTrial = 0;
+          responseTime = 0;
+          document.getElementById('feedback').textContent = '';
+          document.getElementById('response-time').textContent = 0;
+          trials = generateTrials(); // ["Go", "NGO", "GO",,...]
+          showNextTrial();
+      }
+      // Generating the random Trials
+      function generateTrials(){
+          generatedTrials = [];
+          for (let i = 0; i<30; i++){
+              //Math.random() --> 0~1
+              // if we generate the random number between 0 to 1, and if the number is less than 0.8
+              // Then, we push 1 (Go), otherwise push 0 (NO-GO)
+              generatedTrials.push(Math.random() < 0.8 ? 1 : 0) // 80% : Go 20% No
+          }
+          return generatedTrials;
+      }
+      function showNextTrial(){
+          if (currentTrial < trials.length){
+
+              setTimeout(()=>{
+                      trialType = trials[currentTrial];
+                      //Display Go if the trialType is 1 , No-Go otherwise.
+                      document.getElementById('game-area').textContent = trialType === 1 ? "GO" : "NO GO";
+                      startTime = Date.now(); //Date.now() will get the current date and time
+
+                      timeoutId = setTimeout(() => {
+                            if (trialType === 1){
+                                document.getElementById('feedback').textContent = 'Time out!';
+                            }
+                            currentTrial++;
+                            showNextTrial();
+                      }, 2000); // 2000 ms --> 2s
+                }, trialDelay);
+
+
+
+
+          }else{
+            document.getElementById('game-area').textContent = "Task Complete!";
+            clearTimeout(timeoutId);
+          }
+      }
+      function handleKeydown(event){
+         if(event.code === 'Space'){ // check if spacebar is pressed
+             trialType = trials[currentTrial];
+             const endTime = Date.now();
+             responseTime = endTime - startTime;
+
+             document.getElementById('response-time').textContent = responseTime;
+
+             clearTimeout(timeoutId);
+
+             if (trialType === 1){
+                document.getElementById('feedback').textContent = "Correct!"
+             }else{
+                document.getElementById('feedback').textContent = "Wrong!"
+             }
+             currentTrial++;
+             showNextTrial();
+         }
+      }
+
+
+  </script>
+</body>
+{% endblock %}
+</html>

@@ -31,37 +31,37 @@
                 </div>
                 <div class="row mt-5">
                     <div class="col-md-3">
-                        <div class="card">
-                            <img class="option-img d-block mx-auto" src="../static/images/task1/q1/1.png">
+                        <div class="card"  onclick="selectOption(0)">
+                            <img class="option-img d-block mx-auto" src="">
                             <div class="card-body">
                                 <h4 class="text-center">Option A</h4>
                             </div>
                         </div>
                     </div>
                      <div class="col-md-3">
-                        <div class="card">
-                            <img class="option-img d-block mx-auto" src="../static/images/task1/q2/1.png">
+                        <div class="card"   onclick="selectOption(1)">
+                            <img class="option-img d-block mx-auto" src="">
                             <div class="card-body">
                                 <h4 class="text-center">Option B</h4>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="card">
-                            <img class="option-img d-block mx-auto" src="../static/images/task1/q2/2.png">
+                        <div class="card"   onclick="selectOption(2)">
+                            <img class="option-img d-block mx-auto" src="">
                             <div class="card-body">
                                 <h4 class="text-center">Option C</h4>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="card">
-                            <img class="option-img d-block mx-auto" src="../static/images/task1/q3/1.png">
-                            <div class="card-body">
-                                <h4 class="text-center">Option D</h4>
-                            </div>
-                        </div>
-                    </div>
+<!--                    <div class="col-md-3">-->
+<!--                        <div class="card">-->
+<!--                            <img class="option-img d-block mx-auto" src="">-->
+<!--                            <div class="card-body">-->
+<!--                                <h4 class="text-center">Option D</h4>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
                 </div>
             </div>
         </div>
@@ -155,6 +155,59 @@ for (let x = -1; x<=1; x++){
 
 </script>
 
+<script>
+var currentQuestion = 0;
+var startTime;
+var questionTime = [];
+var selectedOptions = {};
+
+var question_images={
+    "q1": ["../static/images/task1/q1/1.png","../static/images/task1/q1/2.png","../static/images/task1/q1/3.png"],
+    "q2": ["../static/images/task1/q2/1.png","../static/images/task1/q2/2.png","../static/images/task1/q2/3.png"],
+    "q3": ["../static/images/task1/q3/1.png","../static/images/task1/q3/2.png","../static/images/task1/q3/3.png"],
+    "q4": ["../static/images/task1/q4/1.png","../static/images/task1/q4/2.png","../static/images/task1/q4/3.png"],
+    "q5": ["../static/images/task1/q5/1.png","../static/images/task1/q5/2.png","../static/images/task1/q5/3.png"],
+    "q6": ["../static/images/task1/q6/1.png","../static/images/task1/q6/2.png","../static/images/task1/q6/3.png"],
+};
+var questionKeys = Object.keys(question_images); // [q1, q2, q3, q4, q5, q6];
+
+// Function to the load the current questions'images
+function loadQuestion(index){
+    var currentImages = question_images[questionKeys[index]];
+    document.querySelectorAll('.option-img').forEach((img,index) => {
+        img.src = currentImages[index];
+    })
+
+    // Record the start time
+    startTime = new Date();
+}
+
+// Function to handle option selection
+function selectOption(optionIndex){
+    var questionKey = questionKeys[currentQuestion];
+
+    // Store the selected option
+    selectedOptions[questionKey] = optionIndex;
+
+    // Record the time taken for this question
+    var endTime = new Date();
+
+    // Recording the time in seconds.
+    questionTime.push((endTime - startTime) / 1000);
+
+    // Proceed to the next question
+    if (currentQuestion < questionKey.length-1){
+        currentQuestion++;
+        loadQuestion(currentQuestion)
+    }else{ // No More questions
+        alert("You've completed all questions!");
+    }
+}
+
+
+
+loadQuestion(currentQuestion);
+</script>
 
 </body>
 {% endblock %}
