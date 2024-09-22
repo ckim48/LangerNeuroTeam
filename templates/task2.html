@@ -26,6 +26,15 @@
         width: 150px;
         margin-top: 20px;
       }
+      #feedback{
+        margin-top: 10px;
+        font-size: 20px;
+          color: #28a745;
+      }
+       #response-time{
+        font-weight:bold;
+           color: #dc3545;
+       }
     </style>
 </head>
 <body>
@@ -72,7 +81,7 @@
       }
       function showNextTrial(){
           if (currentTrial < trials.length){
-
+               flashScreen();
               setTimeout(()=>{
                       trialType = trials[currentTrial];
                       //Display Go if the trialType is 1 , No-Go otherwise.
@@ -114,6 +123,15 @@
              currentTrial++;
              showNextTrial();
          }
+      }
+      function flashScreen(){
+        const gameArea = document.getElementById('game-area');
+          gameArea.textContent = "";
+          gameArea.style.backgroundColor = "#fbfedd";
+          setTimeout(() =>{
+            gameArea.style.backgroundColor = "white";
+          }, 300);
+
       }
 
 
