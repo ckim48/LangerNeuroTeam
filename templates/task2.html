@@ -46,6 +46,7 @@
     <button class="btn btn-primary" id="start-btn">Start</button>
     <p id="feedback" class="text-center"></p>
     <p class="text-center">Response Time: <span id="response-time">0</span> ms</p>
+    <div id="results" class="text-center"></div>
   </div>
   <script>
 
@@ -54,6 +55,11 @@
       let responseTime = 0;
       let startTime;
       let timeoutId;
+
+      let correctResponses = []; // for tracking the number of correct trials
+      let incorrectResponses = []; // for tracking the number of incorrect trials
+      let responseTimes =[]; // for tracking the responsTimes for correct tirals
+
       const trialDelay = 1000; // 1-second delay between trials
 
       document.getElementById('start-btn').addEventListener('click', startGame);
@@ -88,25 +94,25 @@
                       document.getElementById('game-area').textContent = trialType === 1 ? "GO" : "NO GO";
                       startTime = Date.now(); //Date.now() will get the current date and time
 
+                      clearTimeout(timeoutId);
                       timeoutId = setTimeout(() => {
                             if (trialType === 1){
                                 document.getElementById('feedback').textContent = 'Time out!';
+                                incorrectResponses.push(trialType);
+                                responseTimes.push(null);
                             }
                             currentTrial++;
                             showNextTrial();
                       }, 2000); // 2000 ms --> 2s
                 }, trialDelay);
-
-
-
-
           }else{
             document.getElementById('game-area').textContent = "Task Complete!";
             clearTimeout(timeoutId);
+              displayResults();
           }
       }
       function handleKeydown(event){
-         if(event.code === 'Space'){ // check if spacebar is pressed
+         if(event.code === 'Space' && currentTrial < trials.length){ // check if spacebar is pressed
              trialType = trials[currentTrial];
              const endTime = Date.now();
              responseTime = endTime - startTime;
@@ -115,13 +121,27 @@
 
              clearTimeout(timeoutId);
 
+
+             // TrialType
+             // TrialType is 1 --> GO
+             // TrialType is 0 --> No go
+
              if (trialType === 1){
-                document.getElementById('feedback').textContent = "Correct!"
+                document.getElementById('feedback').textContent = "Correct!";
+                 correctResponses.push(trialType);
+                 responseTimes.push(responseTime);
              }else{
-                document.getElementById('feedback').textContent = "Wrong!"
+                document.getElementById('feedback').textContent = "Wrong!";
+                 incorrectResponses.push(trialType);
+                 responseTimes.push(null);
              }
-             currentTrial++;
-             showNextTrial();
+
+             // Add delay before moving to the next trial
+             setTimeout(() => {
+                 currentTrial++;
+                showNextTrial();
+             }, 500); // 0.5s delay before moving to the next trial
+
          }
       }
       function flashScreen(){
@@ -132,6 +152,14 @@
             gameArea.style.backgroundColor = "white";
           }, 300);
 
+      }
+      // Function for displaying the result for the task.
+      function displayResults(){
+          let resultHTML = '<h3>Results:</h3>'
+          resultHTML += `<p>Correct Responses: ${correctResponses.length}</p>`
+          resultHTML += `<p>Incorrect Responses: ${incorrectResponses.length}</p>`
+          resultsHtml += `<p>Average Response Times: ${responseTimes.join(', ')} ms</p>`;
+          document.getElementById('results').innerHTML = resultsHtml;
       }
 
 

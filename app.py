@@ -80,5 +80,9 @@ def task():
 def task2():
     return render_template('task2.html')
 
+@app.route('/task3')
+def task3():
+    return render_template('task3.html')
+
 if __name__ == '__main__':
     app.run(debug=True) # run our web application

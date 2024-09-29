@@ -1,0 +1,142 @@
+{% extends 'header.html' %}
+{% block task2 %}
+<head>
+    <meta charset="UTF-8">
+    <title>Stop and Go Game</title>
+    <style>
+       .game-container {
+        max-width: 600px;
+        margin: 50px auto;
+        text-align: center;
+       }
+      .game-area {
+        height: 400px;
+        width: 100%;
+        border: 2px solid black;
+        border-radius: 10px;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 25px;
+        font-weight: bold;
+        margin-bottom: 20px;
+      }
+      #start-btn {
+        width: 150px;
+        margin-top: 20px;
+      }
+      #feedback {
+        margin-top: 10px;
+        font-size: 20px;
+        color: #28a745;
+      }
+      #response-time {
+        font-weight: bold;
+        color: #dc3545;
+      }
+    </style>
+</head>
+<body>
+  <div class="container game-container">
+    <h1 class="text-center mb-4">Stop and Go Game</h1>
+    <div class="game-area" id="game-area">
+        Press the Button!
+    </div>
+    <button class="btn btn-primary" id="start-btn">Start</button>
+    <p id="feedback" class="text-center"></p>
+    <p class="text-center">Response Time: <span id="response-time">0</span> ms</p>
+  </div>
+
+  <script>
+      let trials = [];
+      let currentTrial = 0;
+      let responseTime = 0;
+      let startTime;
+      let timeoutId;
+      const trialDelay = 1000; // 1-second delay between trials
+
+      document.getElementById('start-btn').addEventListener('click', startGame);
+      document.addEventListener('keydown', handleKeydown);
+
+      function startGame() {
+          currentTrial = 0;
+          responseTime = 0;
+          document.getElementById('feedback').textContent = '';
+          document.getElementById('response-time').textContent = 0;
+          trials = generateTrials();
+          showNextTrial();
+      }
+
+      function generateTrials() {
+          let generatedTrials = [];
+          for (let i = 0; i < 30; i++) {
+              generatedTrials.push(Math.random() < 0.8 ? 1 : 0); // 80% GO, 20% NO-GO
+          }
+          return generatedTrials;
+      }
+
+      function showNextTrial() {
+          if (currentTrial < trials.length) {
+              flashScreen();
+              setTimeout(() => {
+                  let trialType = trials[currentTrial];
+                  document.getElementById('game-area').textContent = trialType === 1 ? "GO" : "NO GO";
+                  startTime = Date.now();
+
+                  // Ensure any previous timeout is cleared before starting a new one
+                  clearTimeout(timeoutId);
+
+                  // Start timeout for response
+                  timeoutId = setTimeout(() => {
+                      if (trialType === 1) {
+                          document.getElementById('feedback').textContent = 'Time out!';
+                      }
+                      currentTrial++;
+                      showNextTrial();
+                  }, 2000); // 2 seconds max response time
+              }, trialDelay);
+          } else {
+              document.getElementById('game-area').textContent = "Task Complete!";
+              clearTimeout(timeoutId);
+          }
+      }
+
+      function handleKeydown(event) {
+          if (event.code === 'Space' && currentTrial < trials.length) {
+              let trialType = trials[currentTrial];
+              const endTime = Date.now();
+              responseTime = endTime - startTime;
+              document.getElementById('response-time').textContent = responseTime;
+
+              // Clear the timeout to prevent "Time out!" feedback
+              clearTimeout(timeoutId);
+
+              // Provide feedback based on the type of trial
+              if (trialType === 1) {
+                  document.getElementById('feedback').textContent = "Correct!";
+              } else {
+                  document.getElementById('feedback').textContent = "Wrong!";
+              }
+
+              // Allow brief pause before the next trial
+              setTimeout(() => {
+                  currentTrial++;
+                  showNextTrial();
+              }, 500); // 0.5s delay before moving to the next trial
+          }
+      }
+
+      function flashScreen() {
+          const gameArea = document.getElementById('game-area');
+          gameArea.textContent = "";
+          gameArea.style.backgroundColor = "#fbfedd";
+          setTimeout(() => {
+              gameArea.style.backgroundColor = "white";
+          }, 300);
+      }
+
+  </script>
+</body>
+{% endblock %}
+</html>
