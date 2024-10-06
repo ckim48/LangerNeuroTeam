@@ -77,7 +77,7 @@
       // Generating the random Trials
       function generateTrials(){
           generatedTrials = [];
-          for (let i = 0; i<30; i++){
+          for (let i = 0; i<5; i++){
               //Math.random() --> 0~1
               // if we generate the random number between 0 to 1, and if the number is less than 0.8
               // Then, we push 1 (Go), otherwise push 0 (NO-GO)
@@ -153,13 +153,47 @@
           }, 300);
 
       }
+      function average_with_skip(lst){
+            validTimes = lst.filter(time => time !== null && time !== undefined && typeof time === 'number');
+            if (validTimes.length === 0 ){
+                return 0;
+            }
+            sum = validTimes.reduce((a,b) => a+b, 0);
+            return sum / validTimes.length;
+      }
       // Function for displaying the result for the task.
       function displayResults(){
           let resultHTML = '<h3>Results:</h3>'
           resultHTML += `<p>Correct Responses: ${correctResponses.length}</p>`
           resultHTML += `<p>Incorrect Responses: ${incorrectResponses.length}</p>`
-          resultsHtml += `<p>Average Response Times: ${responseTimes.join(', ')} ms</p>`;
-          document.getElementById('results').innerHTML = resultsHtml;
+          resultHTML += `<p>Average Response Times: ${responseTimes.join(', ')} ms</p>`;
+          document.getElementById('results').innerHTML = resultHTML;
+
+          average_response = average_with_skip(responseTimes);
+
+          game_data = {
+            correct_answers: correctResponses.length,
+            wrong_answers:   incorrectResponses.length,
+              response_times: responseTimes, // [147,133,151, , , ,]
+              average_response: average_response,
+              timestamp: new Date().toISOString()
+          };
+          fetch('/add_task2',{
+            method: "POST",
+              headers: {
+                'Content-Type': 'application/json'
+              },
+            body: JSON.stringify(game_data)
+          }).then(response => response.json())
+          .then(data => {
+            if(data.status === "success"){
+                console.log("Success");
+            }else{
+                console.log("Error");
+            }
+          }).catch(error => {
+            console.log("Error", error);
+          });
       }
 
 

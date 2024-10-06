@@ -5,21 +5,23 @@ from flask import Flask, render_template, request, url_for, redirect, flash, ses
 from datetime import timedelta
 import firebase_admin
 from firebase_admin import credentials, auth
+import pyrebase
+from config import firebase_config
 
 # Loading the secret key
 cred = credentials.Certificate("secret.json")
 # Access to the firebase using the loaded key.
 firebase_admin.initialize_app(cred)
 
+firebase = pyrebase.initialize_app(firebase_config)
+
 app = Flask(__name__)  # It creates an empty web application
 app.secret_key = "abc"
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=5)
-
 # Log-out
 # Session = {}
 # As soon as user login
 # Session = {"username" : "test"}
-
 # Added the homepage --> For now we don't html filr for the homepage, but we just have "Hello, World"
 @app.route('/')
 def index():
@@ -27,6 +29,20 @@ def index():
     if 'username' in session:
         isLogin = True
     return render_template('index.html', isLogin = isLogin)
+
+db = firebase.database()
+@app.route('/add_task2', methods=["POST"])
+def add_task2():
+    if 'username' in session:
+        user_id = session["username"].replace('.','_').replace('@','_')
+        data = request.json
+        if data:
+            db.child("users").child(user_id).child("game_result_task2").push(data)
+            return {"status": "success"}, 200
+        else:
+            return {"error":"No data received"}
+    else:
+        return {"error":"User not logged in"}
 
 # We added the login page to our web application
 @app.route('/login' , methods = ["GET", "POST"])
