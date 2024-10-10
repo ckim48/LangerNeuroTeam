@@ -2,214 +2,536 @@
 {% block task1 %}
 <head>
     <style>
-        #threejs-canvas-container{
-            position:relative;
+        /* General page styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+ #break-message {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            text-align: center;
+            color: #fff;
+            font-size: 2rem;
+            pointer-events: none; /* Disable clicks */
+        }
+
+        #break-message p {
+            background-color: #28a745;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .task-card {
+            width: 95%;
+            margin: 0 auto;
+            margin-bottom: 50px;
+            border-radius: 12px;
+            background-color: #fff;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .task-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        /* Three.js container */
+        #threejs-canvas-container {
+            position: relative;
             width: 70%;
             height: 360px;
             margin: 0 auto;
-            overflow:hidden;
+            margin-bottom: 30px;
+            background-color: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
         }
-        canvas{
-            display: block;
-            width: 100%;
-            height: 100%;
+
+        /* Option styling */
+        .option {
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+            padding: 10px;
         }
-        .option-img{
+
+        .option:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            background-color: #e9ecef;
+        }
+
+        .option h4 {
+            font-size: 1.25rem;
+            margin-top: 10px;
+            color: #333;
+        }
+
+        .option-canvas {
             width: 200px;
             height: 200px;
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Correct/wrong animation */
+        .success {
+            background-color: #28a745;
+            animation: successAnimation 0.5s ease;
+            color: white;
+        }
+
+        .wrong {
+            background-color: #dc3545;
+            animation: wrongAnimation 0.5s ease;
+            color: white;
+        }
+
+        @keyframes successAnimation {
+            0% { background-color: #28a745; }
+            100% { background-color: #fff; }
+        }
+
+        @keyframes wrongAnimation {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+        }
+
+        /* Flexbox container to display options in a row and center-align */
+        .centered-options {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: nowrap;  /* Ensure all options stay in one row */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            #threejs-canvas-container {
+                width: 90%;
+                height: 300px;
+            }
+
+            .option-canvas {
+                width: 150px;
+                height: 150px;
+            }
+
+            .centered-options {
+                flex-wrap: wrap;  /* Allow wrapping on smaller screens */
+            }
         }
     </style>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container mt-5">
-        <div class="card">
+    <div class="container">
+        <div class="card task-card mt-5">
             <div class="card-header">
-                <h2>Task 1</h2>
+                <h2 id="level-title">Practice Trials: 3 trials</h2>
             </div>
             <div class="card-body">
-                <div id="threejs-canvas-container">
-                </div>
-                <div class="row mt-5">
+                <div id="threejs-canvas-container"></div>
+                <div class="centered-options" id="option-row">
                     <div class="col-md-3">
-                        <div class="card"  onclick="selectOption(0)">
-                            <img class="option-img d-block mx-auto" src="">
+                        <div class="card option" onclick="selectOption(0)">
+                            <canvas class="option-canvas d-block mx-auto" id="option0"></canvas>
                             <div class="card-body">
-                                <h4 class="text-center">Option A</h4>
-                            </div>
-                        </div>
-                    </div>
-                     <div class="col-md-3">
-                        <div class="card"   onclick="selectOption(1)">
-                            <img class="option-img d-block mx-auto" src="">
-                            <div class="card-body">
-                                <h4 class="text-center">Option B</h4>
+                                <h4>Option A</h4>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="card"   onclick="selectOption(2)">
-                            <img class="option-img d-block mx-auto" src="">
+                        <div class="card option" onclick="selectOption(1)">
+                            <canvas class="option-canvas d-block mx-auto" id="option1"></canvas>
                             <div class="card-body">
-                                <h4 class="text-center">Option C</h4>
+                                <h4>Option B</h4>
                             </div>
                         </div>
                     </div>
-<!--                    <div class="col-md-3">-->
-<!--                        <div class="card">-->
-<!--                            <img class="option-img d-block mx-auto" src="">-->
-<!--                            <div class="card-body">-->
-<!--                                <h4 class="text-center">Option D</h4>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
+                    <div class="col-md-3">
+                        <div class="card option" onclick="selectOption(2)">
+                            <canvas class="option-canvas d-block mx-auto" id="option2"></canvas>
+                            <div class="card-body">
+                                <h4>Option C</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Fourth option for Medium and Hard levels -->
+                    <div class="col-md-3" id="option-3-container" style="display: none;">
+                        <div class="card option" onclick="selectOption(3)">
+                            <canvas class="option-canvas d-block mx-auto" id="option3"></canvas>
+                            <div class="card-body">
+                                <h4>Option D</h4>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <!-- Break Message -->
+        <div id="break-message" style="display:none;">
+            <p>Next level starting in <span id="break-timer">5</span> seconds...</p>
+        </div>
     </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+
 
 <script>
-    const scene = new THREE.Scene(); // Container that holds all 3d-objects
-    // perspective of rendering scence
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-    // Object for rending the 3d on webbrowser
-    const renderer = new THREE.WebGLRenderer({antialias:true});
+// Setup for Three.js main scene, camera, and renderer
+const mainScene = new THREE.Scene();
+const mainCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const mainRenderer = new THREE.WebGLRenderer({ antialias: true });
+const container = document.getElementById('threejs-canvas-container');
+mainRenderer.setSize(container.clientWidth, container.clientHeight);
+container.appendChild(mainRenderer.domElement);
 
-    const container = document.getElementById('threejs-canvas-container');
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    container.appendChild(renderer.domElement);
-    // function that generate a single cube
-    function createCubeWithOutline(x,y,z,color){
-        // Create one cube with width, height, and depth of unit(size) 1;
-        const geometry = new THREE.BoxGeometry(1,1,1);
-        // For setting the color of the cube
-        const material = new THREE.MeshBasicMaterial({color: color});
-        // Now generate a 3D graphic with the given shape with size and color;
-        const cube = new THREE.Mesh(geometry, material);
+// Camera positioning
+mainCamera.position.z = 7;
 
-        const edges = new THREE.EdgesGeometry(geometry);
-        const lineMaterial = new THREE.LineBasicMaterial({color:'white'});
-        const outline = new THREE.LineSegments(edges, lineMaterial);
 
-        // group is a set of genrated 3D grahpics
-        const group = new THREE.Group;
-        group.add(cube);
-        group.add(outline);
+const mainControls = new THREE.OrbitControls(mainCamera, mainRenderer.domElement);
 
-        // We are setting the position of the generated 3d graphic
-        group.position.set(x,y,z);
-        return group;
+
+function createBlock(size, colorScheme = null) {
+    const group = new THREE.Group();
+    const blockSize = 1.2; // Spacing between cubes in the block
+    let colors = [];
+
+    if (!colorScheme) {
+        for (let i = 0; i < Math.pow(size, 3); i++) {
+            colors.push(Math.random() * 0xffffff);
+        }
+    } else {
+        colors = colorScheme;
     }
-    // 3x3x3 block --> 27 cubes
-    const blockSize = 1.3; // larger value will make more spaces between the blocks
-    const colors = ['red'];
 
-    // for loops for generating 27 cubes
-for (let x = -1; x<=1; x++){
-        for (let y = -1; y<=1; y++){
-            for (let z = -1; z<=1; z++){
-                // Remove the block at coordinate(1,-1,1)
-                 // which is the frontmost-rightmost block
-                if (x === 1 & y===-1 & z === 1){
-                    continue;
-                }
-                // Remove the block at coordinate(1,-1,-1)
-                 // which is the backmost-rightmost block
-                 if (x === 1 & y===-1 & z === -1){
-                    continue;
-                }
-                 if (x === 0 & y===-1 & z === 1){
-                    continue;
-                }
-                 if (x === 1 & y===1 & z === 0){
-                    continue;
-                }
-                if (x === -1 & y===0 & z === -1){
-                    continue;
-                }
-                if (x === -1 & y===1 & z === -1){
-                    continue;
-                }
+    let colorIndex = 0;
 
-                const cubeGroup = createCubeWithOutline(x*blockSize, y*blockSize, z*blockSize, colors[0]);
-                scene.add(cubeGroup);
+    for (let x = -1; x < size - 1; x++) {
+        for (let y = -1; y < size - 1; y++) {
+            for (let z = -1; z < size - 1; z++) {
+                const geometry = new THREE.BoxGeometry(1, 1, 1);
+                const material = new THREE.MeshBasicMaterial({ color: colors[colorIndex++] });
+                const cube = new THREE.Mesh(geometry, material);
+
+                const edges = new THREE.EdgesGeometry(geometry);
+                const lineMaterial = new THREE.LineBasicMaterial({ color: 'white' });
+                const outline = new THREE.LineSegments(edges, lineMaterial);
+
+                const smallCube = new THREE.Group();
+                smallCube.add(cube);
+                smallCube.add(outline);
+
+                smallCube.position.set(x * blockSize, y * blockSize, z * blockSize);
+
+                group.add(smallCube);
             }
         }
     }
-    camera.position.z = 7;
 
-    //object that allows the user to click and rotate the 3d shape
-    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    group.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
 
-    // funciton for animating the 3D image on the browswer
-    function animate(){
-        requestAnimationFrame(animate);
-        controls.update();
-        renderer.render(scene, camera);
+    return { block: group, colors };
+}
+
+
+function createVariantBlock(correctColors, size) {
+    const variantColors = [...correctColors];
+
+
+    let modified = false;
+    for (let i = 0; i < variantColors.length; i++) {
+        if (Math.random() > 0.5 || !modified) {
+            variantColors[i] = Math.random() * 0xffffff;
+            modified = true;
+        }
     }
-    animate();
+
+    return { block: createBlock(size, variantColors).block, colors: variantColors };
+}
 
 
-</script>
+function generateOptions(correctBlock, correctColors, size, numberOfOptions) {
+    const options = [];
+    const seenColorSchemes = new Set();
 
-<script>
+
+    seenColorSchemes.add(correctColors.toString());
+
+    for (let i = 0; i < numberOfOptions - 1; i++) {
+        let variant;
+        let variantColors;
+
+
+        do {
+            const result = createVariantBlock(correctColors, size);
+            variant = result.block;
+            variantColors = result.colors;
+        } while (seenColorSchemes.has(variantColors.toString()));
+
+        // Add the new color scheme to the set of seen schemes
+        seenColorSchemes.add(variantColors.toString());
+        options.push(variant);
+    }
+
+    return options;
+}
+
+// Global variables
 var currentQuestion = 0;
+var totalQuestions = 33;  // Adjusted to cover all levels (3 practice, 10 easy, 10 medium, 10 hard)
 var startTime;
 var questionTime = [];
 var selectedOptions = {};
+var options = []; // To store generated options
+var correctIndex; // Declare correctIndex as a global variable
+const optionRenderers = [
+    createOptionRenderer("option0"),
+    createOptionRenderer("option1"),
+    createOptionRenderer("option2"),
+    createOptionRenderer("option3")
+];
 
-var question_images={
-    "q1": ["../static/images/task1/q1/1.png","../static/images/task1/q1/2.png","../static/images/task1/q1/3.png"],
-    "q2": ["../static/images/task1/q2/1.png","../static/images/task1/q2/2.png","../static/images/task1/q2/3.png"],
-    "q3": ["../static/images/task1/q3/1.png","../static/images/task1/q3/2.png","../static/images/task1/q3/3.png"],
-    "q4": ["../static/images/task1/q4/1.png","../static/images/task1/q4/2.png","../static/images/task1/q4/3.png"],
-    "q5": ["../static/images/task1/q5/1.png","../static/images/task1/q5/2.png","../static/images/task1/q5/3.png"],
-    "q6": ["../static/images/task1/q6/1.png","../static/images/task1/q6/2.png","../static/images/task1/q6/3.png"],
-};
-var questionKeys = Object.keys(question_images); // [q1, q2, q3, q4, q5, q6];
+// Function to initialize a 3D scene for the options
+function createOptionRenderer(canvasId) {
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000); // Aspect ratio 1:1 for square canvas
+    const renderer = new THREE.WebGLRenderer({ antialias: true, canvas: document.getElementById(canvasId) });
+    renderer.setSize(200, 200);
 
-// Function to the load the current questions'images
-function loadQuestion(index){
-    var currentImages = question_images[questionKeys[index]];
-    document.querySelectorAll('.option-img').forEach((img,index) => {
-        img.src = currentImages[index];
-    })
+    // Camera positioning
+    camera.position.z = 5;
 
-    // Record the start time
-    startTime = new Date();
+    return { scene, camera, renderer };
 }
 
-// Function to handle option selection
-function selectOption(optionIndex){
-    var questionKey = questionKeys[currentQuestion];
 
-    // Store the selected option
-    selectedOptions[questionKey] = optionIndex;
+function renderOptionBlock(renderer, scene, camera, block) {
+    scene.clear();
+    scene.add(block);
 
-    // Record the time taken for this question
-    var endTime = new Date();
+    function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+    }
 
-    // Recording the time in seconds.
-    questionTime.push((endTime - startTime) / 1000);
+    animate();
+}
 
-    // Proceed to the next question
-    if (currentQuestion < questionKey.length-1){
+
+function loadQuestion(size, numberOfOptions) {
+    mainScene.clear();
+
+
+    document.querySelectorAll('.option').forEach(el => {
+        el.classList.remove('success', 'wrong');
+    });
+
+
+    const { block: correctBlock, colors: correctColors } = createBlock(size);
+    mainScene.add(correctBlock);
+
+
+    options = generateOptions(correctBlock, correctColors, size, numberOfOptions);
+
+    correctIndex = Math.floor(Math.random() * numberOfOptions);
+    options.splice(correctIndex, 0, correctBlock.clone());
+
+    optionRenderers.forEach((rendererObj, index) => {
+        if (index < numberOfOptions) {
+            options[index].rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+            renderOptionBlock(rendererObj.renderer, rendererObj.scene, rendererObj.camera, options[index]);
+        }
+    });
+
+    startTime = new Date(); // Start timer
+}
+let score = 0;
+let levelScores = {
+    practice: { correct: 0, incorrect: 0, totalTime: 0 },
+    easy: { correct: 0, incorrect: 0, totalTime: 0 },
+    medium: { correct: 0, incorrect: 0, totalTime: 0 },
+    hard: { correct: 0, incorrect: 0, totalTime: 0 }
+};
+
+function selectOption(optionIndex) {
+    const endTime = new Date();
+    const selectedCanvas = document.getElementById(`option${optionIndex}`).parentElement;
+    const responseTime = (endTime - startTime) / 1000;
+
+
+    document.querySelectorAll('.option').forEach(el => {
+        el.classList.remove('success', 'wrong');
+    });
+
+
+    if (optionIndex === correctIndex) {
+        selectedCanvas.classList.add('success');
+        score++;
+        addScoreToCurrentLevel(true, responseTime);
+    } else {
+        selectedCanvas.classList.add('wrong');
+        addScoreToCurrentLevel(false, responseTime);
+    }
+
+    questionTime.push(responseTime);
+
+    setTimeout(() => {
         currentQuestion++;
-        loadQuestion(currentQuestion)
-    }else{ // No More questions
-        alert("You've completed all questions!");
+
+        if (currentQuestion === 3 || currentQuestion === 13 || currentQuestion === 23 || currentQuestion === 33) {
+            showBreakScreen(() => {
+                if (currentQuestion < totalQuestions) {
+                    sendScoreData();
+                    loadNextLevel();
+                } else {
+                    alert("You've completed all the trials!");
+                    console.log("Selected Options:", selectedOptions);
+                    console.log("Time per question:", questionTime);
+                    sendScoreData();
+                }
+            });
+        } else {
+            loadNextLevel();
+        }
+    }, 400);
+}
+
+function addScoreToCurrentLevel(isCorrect, responseTime) {
+    let levelKey;
+    if (currentQuestion < 3) {
+        levelKey = 'practice';
+    } else if (currentQuestion < 13) {
+        levelKey = 'easy';
+    } else if (currentQuestion < 23) {
+        levelKey = 'medium';
+    } else {
+        levelKey = 'hard';
+    }
+
+    levelScores[levelKey].totalTime += responseTime;
+    if (isCorrect) {
+        levelScores[levelKey].correct++;
+    } else {
+        levelScores[levelKey].incorrect++;
+    }
+}
+
+function sendScoreData() {
+    fetch('/save_score', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            score: score,
+            levelScores: levelScores
+        })
+    }).then(response => response.json())
+      .then(data => console.log('Score data saved:', data));
+}
+
+
+function loadNextLevel() {
+    // Load Practice Level (Questions 0 to 2)
+    if (currentQuestion < 3) {
+        document.getElementById("level-title").innerText = "Practice Trials: 3 trials";
+        document.getElementById("option-3-container").style.display = 'none';
+        loadQuestion(1, 3);
+    }
+    // Load Easy Level (Questions 3 to 12)
+    else if (currentQuestion < 13) {
+        document.getElementById("level-title").innerText = "Block 1 (Easy): 10 trials";
+        document.getElementById("option-3-container").style.display = 'none';
+        loadQuestion(2, 3);
+    }
+    // Load Medium Level (Questions 13 to 22)
+    else if (currentQuestion < 23) {
+        document.getElementById("level-title").innerText = "Block 2 (Medium): 10 trials";
+        document.getElementById("option-3-container").style.display = 'block';
+        loadQuestion(2, 4);
+    }
+    // Load Hard Level (Questions 23 to 32)
+    else if (currentQuestion < 33) {
+        document.getElementById("level-title").innerText = "Block 3 (Difficult): 10 trials";
+        document.getElementById("option-3-container").style.display = 'block';
+        loadQuestion(3, 4);
     }
 }
 
 
+function showBreakScreen(callback) {
+    const breakMessage = document.getElementById('break-message');
+    const mainContent = document.querySelector('.container');
 
-loadQuestion(currentQuestion);
+    mainContent.style.pointerEvents = 'none';
+    breakMessage.style.display = 'flex';
+
+    let timeRemaining = 5;
+    const breakTimerElement = document.getElementById('break-timer');
+    breakTimerElement.textContent = timeRemaining;
+
+    const breakTimer = setInterval(() => {
+        timeRemaining--;
+        breakTimerElement.textContent = timeRemaining;
+
+        if (timeRemaining === 0) {
+            clearInterval(breakTimer);
+            breakMessage.style.display = 'none';
+
+            mainContent.style.pointerEvents = 'auto';
+
+            callback();
+        }
+    }, 1000);
+}
+
+
+function animateMainScene() {
+    requestAnimationFrame(animateMainScene);
+    mainControls.update();
+    mainRenderer.render(mainScene, mainCamera);
+}
+
+animateMainScene();
+loadNextLevel();
+
 </script>
 
 </body>
 {% endblock %}
-
-</html>

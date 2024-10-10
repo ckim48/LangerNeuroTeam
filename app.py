@@ -1,7 +1,7 @@
 # Flask --> Open-source Python library which allows you to make Web-application with Python
 # every html goes to folder 'templates'
 # every css/js + images files goes to 'static'
-from flask import Flask, render_template, request, url_for, redirect, flash, session # We are going to use Flask for this python code
+from flask import Flask, render_template, request, url_for, redirect, flash, jsonify, session # We are going to use Flask for this python code
 from datetime import timedelta
 import firebase_admin
 from firebase_admin import credentials, auth
@@ -23,6 +23,23 @@ app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=5)
 # As soon as user login
 # Session = {"username" : "test"}
 # Added the homepage --> For now we don't html filr for the homepage, but we just have "Hello, World"
+
+# Function to store user data in Firebase
+def store_user_data(user_id, score_data):
+    db.child("users").child(user_id).child("task_data").push(score_data)
+
+@app.route('/save_score', methods=['POST'])
+def save_score():
+    user_id = session.get('username', None)
+    score_data = request.get_json()
+
+    if not user_id or not score_data:
+        return jsonify({'status': 'error', 'message': 'Invalid data'}), 400
+
+    store_user_data(user_id.replace('.', '_').replace('@', '_'), score_data)
+
+    return jsonify({'status': 'success', 'message': 'Score data saved successfully'})
+
 @app.route('/')
 def index():
     isLogin = False
@@ -37,12 +54,18 @@ def add_task2():
         user_id = session["username"].replace('.','_').replace('@','_')
         data = request.json
         if data:
-            db.child("users").child(user_id).child("game_result_task2").push(data)
+            # Save the total score and average response time in the database
+            db.child("users").child(user_id).child("game_result_task2").push({
+                "total_score": data['totalScore'],
+                "avg_response_time": data['avgResponseTime']
+            })
             return {"status": "success"}, 200
         else:
-            return {"error":"No data received"}
+            return {"error": "No data received"}
     else:
-        return {"error":"User not logged in"}
+        return {"error": "User not logged in"}
+
+
 
 # We added the login page to our web application
 @app.route('/login' , methods = ["GET", "POST"])
@@ -99,6 +122,26 @@ def task2():
 @app.route('/task3')
 def task3():
     return render_template('task3.html')
+
+
+@app.route('/add_task3', methods=["POST"])
+def add_task3():
+    if 'username' in session:
+        user_id = session["username"].replace('.', '_').replace('@', '_')
+        data = request.json
+        if data:
+            db.child("users").child(user_id).child("game_result_task3").push({
+                "task": data['task'],
+                "level": data['level'],
+                "rounds_completed": data['roundsCompleted'],
+                "mistakes": data['mistakes']
+            })
+            return {"status": "success"}, 200
+        else:
+            return {"error": "No data received"}, 400
+    else:
+        return {"error": "User not logged in"}, 403
+
 
 if __name__ == '__main__':
     app.run(debug=True) # run our web application

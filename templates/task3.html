@@ -1,142 +1,289 @@
 {% extends 'header.html' %}
-{% block task2 %}
-<head>
-    <meta charset="UTF-8">
-    <title>Stop and Go Game</title>
+{% block task3 %}
     <style>
-       .game-container {
-        max-width: 600px;
-        margin: 50px auto;
-        text-align: center;
-       }
-      .game-area {
-        height: 400px;
-        width: 100%;
-        border: 2px solid black;
-        border-radius: 10px;
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 25px;
-        font-weight: bold;
-        margin-bottom: 20px;
-      }
-      #start-btn {
-        width: 150px;
-        margin-top: 20px;
-      }
-      #feedback {
-        margin-top: 10px;
-        font-size: 20px;
-        color: #28a745;
-      }
-      #response-time {
-        font-weight: bold;
-        color: #dc3545;
-      }
+        /* General page styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .game-container {
+            max-width: 600px;
+            margin: 50px auto;
+            text-align: center;
+        }
+
+        .card {
+            background-color: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .game-area {
+            width: 100%;
+            border-radius: 10px;
+            background-color: #f1f1f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 10px;
+        }
+
+        .square {
+            width: 100px;
+            height: 100px;
+            background-color: #ccc;
+            border: 2px solid #333;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .square.active {
+            background-color: yellow;
+        }
+
+        #message {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #007bff;
+        }
+
+        #start-btn {
+            width: 150px;
+            margin: 0 auto;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            border: none;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        #start-btn:hover {
+            background-color: #0056b3;
+        }
+
+        #break-message {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            text-align: center;
+            color: #fff;
+            font-size: 2rem;
+            display: none;
+        }
+
+        #break-message p {
+            background-color: #28a745;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
     </style>
-</head>
-<body>
-  <div class="container game-container">
-    <h1 class="text-center mb-4">Stop and Go Game</h1>
-    <div class="game-area" id="game-area">
-        Press the Button!
-    </div>
-    <button class="btn btn-primary" id="start-btn">Start</button>
-    <p id="feedback" class="text-center"></p>
-    <p class="text-center">Response Time: <span id="response-time">0</span> ms</p>
-  </div>
 
-  <script>
-      let trials = [];
-      let currentTrial = 0;
-      let responseTime = 0;
-      let startTime;
-      let timeoutId;
-      const trialDelay = 1000; // 1-second delay between trials
+    <body>
+        <div class="container game-container">
+            <div class="card">
+                <h1 class="text-center mb-4">Two-Dimensional Sequence Memory (Task III)</h1>
+                <div id="message" class="text-center">Click the squares in the order they lit up.</div>
+                <div class="game-area">
+                    <div class="grid" id="grid-container"></div>
+                </div>
+                <button type="button" id="start-btn">Start Game</button>
+            </div>
 
-      document.getElementById('start-btn').addEventListener('click', startGame);
-      document.addEventListener('keydown', handleKeydown);
+            <div id="break-message">
+                <p>Next level starting in <span id="break-timer">5</span> seconds...</p>
+            </div>
+        </div>
 
-      function startGame() {
-          currentTrial = 0;
-          responseTime = 0;
-          document.getElementById('feedback').textContent = '';
-          document.getElementById('response-time').textContent = 0;
-          trials = generateTrials();
-          showNextTrial();
-      }
+        <script>
+            let sequence = [];
+            let playerSequence = [];
+            let round = 1;
+            let mistakes = 0;
+            const maxMistakes = 1;
 
-      function generateTrials() {
-          let generatedTrials = [];
-          for (let i = 0; i < 30; i++) {
-              generatedTrials.push(Math.random() < 0.8 ? 1 : 0); // 80% GO, 20% NO-GO
-          }
-          return generatedTrials;
-      }
+            const gridContainer = document.getElementById('grid-container');
+            const message = document.getElementById('message');
+            const startButton = document.getElementById('start-btn');
+            const breakMessage = document.getElementById('break-message');
+            const breakTimerElement = document.getElementById('break-timer');
 
-      function showNextTrial() {
-          if (currentTrial < trials.length) {
-              flashScreen();
-              setTimeout(() => {
-                  let trialType = trials[currentTrial];
-                  document.getElementById('game-area').textContent = trialType === 1 ? "GO" : "NO GO";
-                  startTime = Date.now();
+            let gridSize = 3;
+            let level = 1;
 
-                  // Ensure any previous timeout is cleared before starting a new one
-                  clearTimeout(timeoutId);
+            startButton.addEventListener('click', startGame);
 
-                  // Start timeout for response
-                  timeoutId = setTimeout(() => {
-                      if (trialType === 1) {
-                          document.getElementById('feedback').textContent = 'Time out!';
-                      }
-                      currentTrial++;
-                      showNextTrial();
-                  }, 2000); // 2 seconds max response time
-              }, trialDelay);
-          } else {
-              document.getElementById('game-area').textContent = "Task Complete!";
-              clearTimeout(timeoutId);
-          }
-      }
+            function startGame() {
+                sequence = [];
+                playerSequence = [];
+                round = 1;
+                mistakes = 0;
+                message.textContent = "Watch the sequence!";
+                generateGrid(gridSize);
+                nextRound();
+            }
 
-      function handleKeydown(event) {
-          if (event.code === 'Space' && currentTrial < trials.length) {
-              let trialType = trials[currentTrial];
-              const endTime = Date.now();
-              responseTime = endTime - startTime;
-              document.getElementById('response-time').textContent = responseTime;
+            function nextRound() {
+                playerSequence = [];
+                const newSquare = Math.floor(Math.random() * gridSize * gridSize);
+                sequence.push(newSquare);
+                showSequence(sequence);
+            }
 
-              // Clear the timeout to prevent "Time out!" feedback
-              clearTimeout(timeoutId);
+            function showSequence(seq) {
+                let i = 0;
+                const interval = setInterval(() => {
+                    if (i > 0) deactivateSquare(seq[i - 1]);
 
-              // Provide feedback based on the type of trial
-              if (trialType === 1) {
-                  document.getElementById('feedback').textContent = "Correct!";
-              } else {
-                  document.getElementById('feedback').textContent = "Wrong!";
-              }
+                    if (i < seq.length) {
+                        activateSquare(seq[i]);
+                        i++;
+                    } else {
+                        clearInterval(interval);
+                        message.textContent = "Now, repeat the sequence!";
+                    }
+                }, 1000);
+            }
 
-              // Allow brief pause before the next trial
-              setTimeout(() => {
-                  currentTrial++;
-                  showNextTrial();
-              }, 500); // 0.5s delay before moving to the next trial
-          }
-      }
+            function activateSquare(index) {
+                const square = document.getElementById(`square${index}`);
+                square.classList.add('active');
+            }
 
-      function flashScreen() {
-          const gameArea = document.getElementById('game-area');
-          gameArea.textContent = "";
-          gameArea.style.backgroundColor = "#fbfedd";
-          setTimeout(() => {
-              gameArea.style.backgroundColor = "white";
-          }, 300);
-      }
+            function deactivateSquare(index) {
+                const square = document.getElementById(`square${index}`);
+                square.classList.remove('active');
+            }
 
-  </script>
-</body>
+            function handlePlayerInput(index) {
+                playerSequence.push(index);
+                const currentStep = playerSequence.length - 1;
+
+                if (playerSequence[currentStep] !== sequence[currentStep]) {
+                    mistakes++;
+                    if (mistakes > maxMistakes) {
+                        message.textContent = "Game Over! Restart to try again.";
+                        saveTaskIIIResult();
+                        return;
+                    }
+                    message.textContent = `Oops! You have ${maxMistakes - mistakes} tries left.`;
+                    playerSequence = [];
+                    return;
+                }
+
+                if (playerSequence.length === sequence.length) {
+                    if (mistakes < maxMistakes) {
+                        message.textContent = `Good job! Moving to round ${round + 1}.`;
+                        round++;
+                        if (round % 5 === 0) {
+                            saveTaskIIIResult();  // Save result after each level
+                            showBreakScreen(() => {
+                                nextLevel();
+                            });
+                        } else {
+                            setTimeout(nextRound, 1000);
+                        }
+                    }
+                }
+            }
+
+            function showBreakScreen(callback) {
+                breakMessage.style.display = 'flex';
+                let timeRemaining = 5;
+                breakTimerElement.textContent = timeRemaining;
+
+                const breakTimer = setInterval(() => {
+                    timeRemaining--;
+                    breakTimerElement.textContent = timeRemaining;
+
+                    if (timeRemaining === 0) {
+                        clearInterval(breakTimer);
+                        breakMessage.style.display = 'none';
+                        callback();
+                    }
+                }, 1000);
+            }
+
+            function nextLevel() {
+                level++;
+                if (level === 2) {
+                    gridSize = 4;
+                    message.textContent = "Medium Level!";
+                } else if (level === 3) {
+                    gridSize = 5;
+                    message.textContent = "Hard Level!";
+                }
+
+                sequence = [];
+                round = 1;
+                generateGrid(gridSize);
+                nextRound();
+            }
+
+            function generateGrid(size) {
+                gridContainer.style.gridTemplateColumns = `repeat(${size}, 100px)`;
+                gridContainer.style.gridTemplateRows = `repeat(${size}, 100px)`;
+                gridContainer.innerHTML = '';
+
+                for (let i = 0; i < size * size; i++) {
+                    const square = document.createElement('div');
+                    square.classList.add('square');
+                    square.setAttribute('id', `square${i}`);
+                    square.addEventListener('click', () => handlePlayerInput(i));
+                    gridContainer.appendChild(square);
+                }
+            }
+
+            function saveTaskIIIResult() {
+                const resultData = {
+                    task: 'Task III',
+                    level: level,
+                    roundsCompleted: round - 1, 
+                    mistakes: mistakes
+                };
+
+                fetch('/add_task3', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(resultData),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        console.log('Task III result saved successfully');
+                    } else {
+                        console.error('Failed to save Task III result:', data.error);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error saving Task III result:', error);
+                });
+            }
+        </script>
+    </body>
 {% endblock %}
-</html>

@@ -1,203 +1,311 @@
 {% extends 'header.html' %}
 {% block task2 %}
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
     <style>
-       .game-container{
-        max-width: 600px;
-        margin: 50px auto;
-        text-align:center;
-       }
-      .game-area{
-        height: 400px;
-        width: 100%;
-        border: 2px solid black;
-        border-radius: 10px;
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 25px;
-        font-weight: bold;
-        margin-bottom: 20px;
-      }
-      #start-btn{
-        width: 150px;
-        margin-top: 20px;
-      }
-      #feedback{
-        margin-top: 10px;
-        font-size: 20px;
-          color: #28a745;
-      }
-       #response-time{
-        font-weight:bold;
-           color: #dc3545;
-       }
+        /* General page styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .game-container {
+            max-width: 600px;
+            margin: 50px auto;
+            text-align: center;
+        }
+
+        .card {
+            background-color: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .game-area {
+            height: 400px;
+            width: 100%;
+            border-radius: 10px;
+            background-color: #f1f1f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        #start-btn {
+            width: 150px;
+            margin: 0 auto;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            border: none;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        #start-btn:hover {
+            background-color: #0056b3;
+        }
+
+        #trial-number {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #007bff;
+        }
+
+        .traffic-light {
+            position: absolute;
+            display: block;
+            height: 150px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+        }
+
+        .traffic-light.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #break-message {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            text-align: center;
+            color: #fff;
+            font-size: 2rem;
+            pointer-events: none;
+        }
+
+        #break-message p {
+            background-color: #28a745;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .game-area {
+                height: 300px;
+            }
+        }
     </style>
-</head>
-<body>
-  <div class="container game-container">
-    <h1 class="text-center mb-4">Stop and Go Game</h1>
-    <div class="game-area" id ="game-area">
-        Press the Button!
-    </div>
-    <button class="btn btn-primary" id="start-btn">Start</button>
-    <p id="feedback" class="text-center"></p>
-    <p class="text-center">Response Time: <span id="response-time">0</span> ms</p>
-    <div id="results" class="text-center"></div>
-  </div>
-  <script>
 
-      let trials = []; // list that contains the problems --> ex) ["Go", "NGO", "GO",,...]
-      let currentTrial = 0;
-      let responseTime = 0;
-      let startTime;
-      let timeoutId;
+    <body>
+        <div class="container game-container">
+            <div class="card">
+                <h1 class="text-center mb-4">Stop and Go Game</h1>
+                <div id="trial-number" class="text-center"></div>
+                <div class="game-area" id="game-area">
+                    <img id="green-light" src="../static/images/assets/green.png" class="traffic-light" alt="Green Light">
+                    <img id="red-light" src="../static/images/assets/red.png" class="traffic-light" alt="Red Light">
+                    <img id="orange-light" src="../static/images/assets/yellow.png" class="traffic-light" alt="Orange Light">
+                </div>
+                <button type="button" id="start-btn">Start</button>
+            </div>
 
-      let correctResponses = []; // for tracking the number of correct trials
-      let incorrectResponses = []; // for tracking the number of incorrect trials
-      let responseTimes =[]; // for tracking the responsTimes for correct tirals
+            <div id="break-message" style="display:none;">
+                <p>Next level starting in <span id="break-timer">5</span> seconds...</p>
+            </div>
+        </div>
 
-      const trialDelay = 1000; // 1-second delay between trials
+        <script>
+            let blockLevels = [
+                { goTrials: 30, noGoTrials: 10 }, // Level 1
+                { goTrials: 25, noGoTrials: 15 }, // Level 2
+                { goTrials: 35, noGoTrials: 5 }   // Level 3
+            ];
 
-      document.getElementById('start-btn').addEventListener('click', startGame);
-      document.addEventListener('keydown', handleKeydown);
+            let currentLevel = 0;
+            let currentTrial = 0;
+            let trials = [];
+            let timeoutId;
+            let gameStarted = false;
+            let isBreakActive = false;
+            let isTrialActive = false;
 
-      function startGame(){
-          // Reset Game State
-          currentTrial = 0;
-          responseTime = 0;
-          document.getElementById('feedback').textContent = '';
-          document.getElementById('response-time').textContent = 0;
-          trials = generateTrials(); // ["Go", "NGO", "GO",,...]
-          showNextTrial();
-      }
-      // Generating the random Trials
-      function generateTrials(){
-          generatedTrials = [];
-          for (let i = 0; i<5; i++){
-              //Math.random() --> 0~1
-              // if we generate the random number between 0 to 1, and if the number is less than 0.8
-              // Then, we push 1 (Go), otherwise push 0 (NO-GO)
-              generatedTrials.push(Math.random() < 0.8 ? 1 : 0) // 80% : Go 20% No
-          }
-          return generatedTrials;
-      }
-      function showNextTrial(){
-          if (currentTrial < trials.length){
-               flashScreen();
-              setTimeout(()=>{
-                      trialType = trials[currentTrial];
-                      //Display Go if the trialType is 1 , No-Go otherwise.
-                      document.getElementById('game-area').textContent = trialType === 1 ? "GO" : "NO GO";
-                      startTime = Date.now(); //Date.now() will get the current date and time
+            let score = 0;
+            let goTrialResponseTimes = [];
 
-                      clearTimeout(timeoutId);
-                      timeoutId = setTimeout(() => {
-                            if (trialType === 1){
-                                document.getElementById('feedback').textContent = 'Time out!';
-                                incorrectResponses.push(trialType);
-                                responseTimes.push(null);
-                            }
+            document.getElementById('start-btn').addEventListener('click', startGame);
+            document.addEventListener('keydown', handleKeydown);
+
+            function startGame() {
+                gameStarted = true;
+                currentTrial = 0;
+                currentLevel = 0;
+                score = 0;
+                goTrialResponseTimes = [];
+                trials = generateBalancedTrials(blockLevels[currentLevel]);
+                startNextLevel();
+            }
+
+            function startNextLevel() {
+                currentTrial = 0;
+                document.getElementById('break-message').style.display = 'none';
+                showNextTrial();
+            }
+
+            function generateBalancedTrials(block) {
+                let goTrials = new Array(block.goTrials).fill(1);  // Go trials
+                let noGoTrials = new Array(block.noGoTrials).fill(0);  // No-go trials
+                let combinedTrials = goTrials.concat(noGoTrials);
+
+                // Shuffle the trials
+                for (let i = combinedTrials.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [combinedTrials[i], combinedTrials[j]] = [combinedTrials[j], combinedTrials[i]];
+                }
+
+                return combinedTrials;
+            }
+
+            function showNextTrial() {
+                if (currentTrial < trials.length) {
+                    updateTrialNumber(currentTrial + 1, trials.length);
+                    isTrialActive = true;
+
+                    hideAllLights();
+                    showLight('orange-light');
+
+                    setTimeout(() => {
+                        let trialType = trials[currentTrial];
+                        if (trialType === 1) {
+                            switchLight('orange-light', 'green-light'); // Go trial
+                            startResponseTimer();  // Start timing for Go trial
+                        } else {
+                            switchLight('orange-light', 'red-light'); // No-go trial
+                        }
+
+                        timeoutId = setTimeout(() => {
+                            isTrialActive = false;
                             currentTrial++;
                             showNextTrial();
-                      }, 2000); // 2000 ms --> 2s
-                }, trialDelay);
-          }else{
-            document.getElementById('game-area').textContent = "Task Complete!";
-            clearTimeout(timeoutId);
-              displayResults();
-          }
-      }
-      function handleKeydown(event){
-         if(event.code === 'Space' && currentTrial < trials.length){ // check if spacebar is pressed
-             trialType = trials[currentTrial];
-             const endTime = Date.now();
-             responseTime = endTime - startTime;
+                        }, 2000);
+                    }, 500);
+                } else {
+                    currentLevel++;
+                    if (currentLevel < blockLevels.length) {
+                        showBreakScreen(() => {
+                            trials = generateBalancedTrials(blockLevels[currentLevel]);
+                            startNextLevel();
+                        });
+                    } else {
+                        document.getElementById('game-area').textContent = "Task Complete!";
+                        clearTimeout(timeoutId);
 
-             document.getElementById('response-time').textContent = responseTime;
-
-             clearTimeout(timeoutId);
-
-
-             // TrialType
-             // TrialType is 1 --> GO
-             // TrialType is 0 --> No go
-
-             if (trialType === 1){
-                document.getElementById('feedback').textContent = "Correct!";
-                 correctResponses.push(trialType);
-                 responseTimes.push(responseTime);
-             }else{
-                document.getElementById('feedback').textContent = "Wrong!";
-                 incorrectResponses.push(trialType);
-                 responseTimes.push(null);
-             }
-
-             // Add delay before moving to the next trial
-             setTimeout(() => {
-                 currentTrial++;
-                showNextTrial();
-             }, 500); // 0.5s delay before moving to the next trial
-
-         }
-      }
-      function flashScreen(){
-        const gameArea = document.getElementById('game-area');
-          gameArea.textContent = "";
-          gameArea.style.backgroundColor = "#fbfedd";
-          setTimeout(() =>{
-            gameArea.style.backgroundColor = "white";
-          }, 300);
-
-      }
-      function average_with_skip(lst){
-            validTimes = lst.filter(time => time !== null && time !== undefined && typeof time === 'number');
-            if (validTimes.length === 0 ){
-                return 0;
+                        // Calculate and send the score and average response time
+                        const totalScore = score;
+                        const avgResponseTime = calculateAverage(goTrialResponseTimes);
+                        sendTask2Result({ totalScore, avgResponseTime });
+                    }
+                }
             }
-            sum = validTimes.reduce((a,b) => a+b, 0);
-            return sum / validTimes.length;
-      }
-      // Function for displaying the result for the task.
-      function displayResults(){
-          let resultHTML = '<h3>Results:</h3>'
-          resultHTML += `<p>Correct Responses: ${correctResponses.length}</p>`
-          resultHTML += `<p>Incorrect Responses: ${incorrectResponses.length}</p>`
-          resultHTML += `<p>Average Response Times: ${responseTimes.join(', ')} ms</p>`;
-          document.getElementById('results').innerHTML = resultHTML;
 
-          average_response = average_with_skip(responseTimes);
-
-          game_data = {
-            correct_answers: correctResponses.length,
-            wrong_answers:   incorrectResponses.length,
-              response_times: responseTimes, // [147,133,151, , , ,]
-              average_response: average_response,
-              timestamp: new Date().toISOString()
-          };
-          fetch('/add_task2',{
-            method: "POST",
-              headers: {
-                'Content-Type': 'application/json'
-              },
-            body: JSON.stringify(game_data)
-          }).then(response => response.json())
-          .then(data => {
-            if(data.status === "success"){
-                console.log("Success");
-            }else{
-                console.log("Error");
+            let responseStartTime;
+            function startResponseTimer() {
+                responseStartTime = Date.now();
             }
-          }).catch(error => {
-            console.log("Error", error);
-          });
-      }
 
+            function handleKeydown(event) {
+                if (event.code === 'Space') {
+                    event.preventDefault();
+                }
 
-  </script>
-</body>
+                if (!isBreakActive && event.code === 'Space' && isTrialActive && gameStarted) {
+                    clearTimeout(timeoutId);
+
+                    const trialType = trials[currentTrial];
+                    if (trialType === 1) {
+                        // Go trial, track response time
+                        const responseTime = (Date.now() - responseStartTime) / 1000;
+                        goTrialResponseTimes.push(Math.min(responseTime, 2));  // Cap at 2 seconds
+                        score++;  // Correct response adds to score
+                    } else {
+                        // No-go trial, wrong response
+                        alert("Oops! You shouldn't press space on the red light!");
+                    }
+                    isTrialActive = false;
+                    currentTrial++;
+                    showNextTrial();
+                }
+            }
+
+            function switchLight(fromLightId, toLightId) {
+                document.getElementById(fromLightId).classList.remove('active');
+                document.getElementById(toLightId).classList.add('active');
+            }
+
+            function showLight(lightId) {
+                document.getElementById(lightId).classList.add('active');
+            }
+
+            function hideAllLights() {
+                document.getElementById('green-light').classList.remove('active');
+                document.getElementById('red-light').classList.remove('active');
+                document.getElementById('orange-light').classList.remove('active');
+            }
+
+            function updateTrialNumber(current, total) {
+                document.getElementById('trial-number').innerText = `Trial ${current} of ${total}`;
+            }
+
+            function showBreakScreen(callback) {
+                isBreakActive = true;
+                const breakMessage = document.getElementById('break-message');
+                breakMessage.style.display = 'flex';
+                let timeRemaining = 5;
+                const breakTimerElement = document.getElementById('break-timer');
+                breakTimerElement.textContent = timeRemaining;
+
+                const breakTimer = setInterval(() => {
+                    timeRemaining--;
+                    breakTimerElement.textContent = timeRemaining;
+
+                    if (timeRemaining === 0) {
+                        clearInterval(breakTimer);
+                        breakMessage.style.display = 'none';
+                        isBreakActive = false;
+                        callback();
+                    }
+                }, 1000);
+            }
+
+            function calculateAverage(times) {
+                const total = times.reduce((acc, time) => acc + time, 0);
+                return total / times.length;
+            }
+
+            function sendTask2Result(resultData) {
+                fetch('/add_task2', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(resultData),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        console.log('Task 2 result saved successfully');
+                    } else {
+                        console.error('Failed to save task 2 result:', data.error);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error saving task 2 result:', error);
+                });
+            }
+        </script>
+    </body>
 {% endblock %}
-</html>
