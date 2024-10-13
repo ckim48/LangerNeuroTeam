@@ -103,9 +103,32 @@
     </style>
 
     <body>
-        <div class="container game-container">
+        <div class="container">
+                <div class="modal fade"  id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Instructions for 3-D rotations</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>General things about task 1</p>
+                                <ul>
+                                    <li>insturction1</li>
+                                    <li>instruction2</li>
+                                    <li>instruciton3</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             <div class="card">
                 <h1 class="text-center mb-4">Two-Dimensional Sequence Memory (Task III)</h1>
+                <button type="button" class="icon-btn"  data-bs-toggle="modal" data-bs-target="#infoModal">
+                    <i class="bi bi-info-circle"></i>
+                </button>
+
                 <div id="message" class="text-center">Click the squares in the order they lit up.</div>
                 <div class="game-area">
                     <div class="grid" id="grid-container"></div>

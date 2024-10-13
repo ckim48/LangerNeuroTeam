@@ -103,8 +103,30 @@
 
     <body>
         <div class="container game-container">
+            <div class="modal fade"  id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Instructions for 3-D rotations</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>General things about task 1</p>
+                            <ul>
+<!--                                <li>insturction1</li> 30 go 10 nogo-->
+<!--                                <li>instruction2</li> 25 go 15 nogo-->
+<!--                                <li>instruciton3</li> 35 go 5 nogo-->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="card">
                 <h1 class="text-center mb-4">Stop and Go Game</h1>
+                 <button type="button" class="icon-btn"  data-bs-toggle="modal" data-bs-target="#infoModal">
+                    <i class="bi bi-info-circle"></i>
+                </button>
                 <div id="trial-number" class="text-center"></div>
                 <div class="game-area" id="game-area">
                     <img id="green-light" src="../static/images/assets/green.png" class="traffic-light" alt="Green Light">
