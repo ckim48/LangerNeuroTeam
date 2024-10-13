@@ -68,43 +68,36 @@ def add_task2():
 
 
 # We added the login page to our web application
-@app.route('/login' , methods = ["GET", "POST"])
+@app.route('/login', methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
         try:
-            user = auth.get_user_by_email(username)
-            session["username"] = username
+            user = firebase.auth().sign_in_with_email_and_password(username, password)
+            session["username"] = username  # Store the email or unique identifier in session
             return redirect(url_for('index'))
-        except firebase_admin._auth_utils.UserNotFoundError:
-            flash("Username or password is wrong")
-            return render_template('login.html')
         except Exception as e:
-            flash(str(e))
+            flash("Username or password is wrong")
             return render_template('login.html')
     else:
         return render_template('login.html')
 
-@app.route('/register' , methods = ["GET", "POST"])
+
+@app.route('/register', methods=["GET", "POST"])
 def register():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
         try:
-            user = auth.create_user(
-                email = username,
-                password=password
-            )
+            user = firebase.auth().create_user_with_email_and_password(username, password)
             return redirect(url_for('login'))
-        except firebase_admin._auth_utils.EmailAlreadyExistsError:
-            flash("This email is already registered")
-            return render_template('register.html')
         except Exception as e:
-            flash(str(e))
+            flash("This email is already registered or an error occurred")
             return render_template('register.html')
     else:
         return render_template('register.html')
+
 
 @app.route('/logout')
 def logout():

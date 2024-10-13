@@ -63,16 +63,65 @@
         .container h1 {
             color: #fff;
         }
+        .task-list{
+            padding: 50px 0;
+        }
+        .task-item{
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .task-item h2{
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .task-item p{
+            font-size: 18px;
+            color: #6c757d;
+        }
+        .task-item .btn{
+            margin-top: 20px;
+        }
+
     </style>
 </head>
 <body>
-
-
 
 <section class="hero">
     <div class="container">
         <h1>Welcome to Neuro App</h1>
         <p>Enjoy our mini tasks</p>
+    </div>
+</section>
+
+<section class="task-list">
+    <div class="container">
+
+        <div class="row g-5">
+            <div class="col-md-4 task-item">
+                <h5>Task 1</h5>
+                <h3>3-D Rotations</h3>
+                <p>Rotate the image shown in the picture with your mouse. And from the 4 pictures underneath, choose the option which displays the image above</p>
+                <a href="{{url_for('task')}}" class="btn btn-success">Start Task</a>
+            </div>
+
+            <div class="col-md-4 task-item">
+                <h5>Task 2</h5>
+                <h3>Go and No-Go</h3>
+                <p>The image of the traffic light will either display green light or red light. If the traffic light turns green, press the space bar. If the light turns red, do not press anything.</p>
+                <a href="{{url_for('task2')}}" class="btn btn-success">Start Task</a>
+            </div>
+
+            <div class="col-md-4 task-item">
+                <h5>Task 3</h5>
+                <h3>Sequence Memory</h3>
+                <p>A square out of the 3x3 grid will light up green. After the light has disappeared, press on the square which lit up. Every round, one more square will light up and create a longer sequence.</p>
+                <a href="{{url_for('task3')}}" class="btn btn-success">Start Task</a>
+            </div>
+        </div>
+
     </div>
 </section>
 
