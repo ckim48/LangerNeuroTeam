@@ -18,10 +18,16 @@
             background-color: #fff;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
-            padding: 20px;
+/*            padding: 20px;*/
             margin-bottom: 20px;
+            margin-top: 30px;
         }
-
+                .icon-btn{
+            background: none;
+            border: none;
+            color:white;
+            font-size: 1.5rem;
+        }
         .game-area {
             width: 100%;
             border-radius: 10px;
@@ -100,6 +106,20 @@
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
+                .card-header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items:center;
+
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
     </style>
 
     <body>
@@ -124,10 +144,12 @@
                 </div>
 
             <div class="card">
-                <h1 class="text-center mb-4">Two-Dimensional Sequence Memory (Task III)</h1>
-                <button type="button" class="icon-btn"  data-bs-toggle="modal" data-bs-target="#infoModal">
-                    <i class="bi bi-info-circle"></i>
-                </button>
+                <div class="card-header">
+                    <h1 class="text-center">Two-Dimensional Sequence Memory (Task III)</h1>
+                    <button type="button" class="icon-btn"  data-bs-toggle="modal" data-bs-target="#infoModal">
+                        <i class="bi bi-info-circle"></i>
+                    </button>
+                </div>
 
                 <div id="message" class="text-center">Click the squares in the order they lit up.</div>
                 <div class="game-area">

@@ -52,9 +52,20 @@
             background-color: #007bff;
             color: white;
             padding: 15px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items:center;
+
             text-align: center;
             font-size: 1.5rem;
             font-weight: 600;
+        }
+        .icon-btn{
+            background: none;
+            border: none;
+            color:white;
+            font-size: 1.5rem;
         }
 
         /* Three.js container */
@@ -150,6 +161,17 @@
                 flex-wrap: wrap;  /* Allow wrapping on smaller screens */
             }
         }
+        .font-italic{
+                font-style: italic;
+                font-size: 1.0rem;
+            }
+        .modal-title{
+            font-style: bold;
+            font-size: 1.4rem;
+        }
+        .text1{
+            font-size: 0.9rem;
+        }
     </style>
 
     <!-- Google Fonts -->
@@ -157,7 +179,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="modal fade"  id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+<div class="modal fade"  id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -165,13 +187,13 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
-                <div class="modal-body">
-                    <p>Rotate the image shown in the picture with your mouse. And from the 4 pictures underneath, choose the option which displays the image above.</p>
+                <div class="modal-body px-4 py-4">
+                    <p class = "font-italic">Rotate the image shown in the picture with your mouse. And from the 4 pictures underneath, choose the option which displays the image above.</p>
                     <ul>
-                        <li>The first stages are the Practice Trials. There are 3 trials in this stage.</li>
-                        <li>The second stages are the Easy Difficulty Trials. There are 10 trials in this stage. You must choose the option shown by the 2x2x2 cube above. </li>
-                        <li>The third stages are the Medium Difficulty Trials. There are 10 trials in this stage. It is almost identical to the second stage but there are 3 options to chose from.</li>
-                        <li>The final stages are the Difficult Difficulty Trials. There are 10 trials in this stage. You must choose the option shown by the 3x3x3 cube above from 4 different options.</li>
+                        <li class = "text1">The first stages are the Practice Trials. There are 3 trials in this stage.</li>
+                        <li class = "mt-2 text1">The second stages are the Easy Difficulty Trials. There are 10 trials in this stage. You must choose the option shown by the 2x2x2 cube above. </li>
+                        <li class = "mt-2 text1">The third stages are the Medium Difficulty Trials. There are 10 trials in this stage. It is almost identical to the second stage but there are 3 options to chose from.</li>
+                        <li class = "mt-2 text1">The final stages are the Difficult Difficulty Trials. There are 10 trials in this stage. You must choose the option shown by the 3x3x3 cube above from 4 different options.</li>
                     </ul>
                 </div>
             </div>
