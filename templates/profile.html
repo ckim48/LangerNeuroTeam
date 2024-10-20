@@ -11,17 +11,34 @@
         <div class="col-md-4">
             <div class="card">
                 <h3>Task 1</h3>
+                {% if task1 %}
+
+                {% else %}
+                    <p>No scores available for Task 1.</p>
+                    <a class="btn btn-primary" href="{{url_for('task')}}">Start Task 1</a>
+                {% endif %}
             </div>
         </div>
         <div class="col-md-4">
             <div class="card">
                 <h3>Task 2</h3>
+                 {% if task2 %}
+                    {{task2}}
+                {% else %}
+                    <p>No scores available for Task 3.</p>
+                    <a class="btn btn-primary" href="{{url_for('task2')}}">Start Task 2</a>
+                {% endif %}
             </div>
         </div>
         <div class="col-md-4">
             <div class="card">
                 <h3>Task 3</h3>
+                 {% if task3 %}
 
+                {% else %}
+                    <p>No scores available for Task 3.</p>
+                    <a class="btn btn-primary" href="{{url_for('task3')}}">Start Task 3</a>
+                {% endif %}
             </div>
         </div>
     </div>

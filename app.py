@@ -28,6 +28,7 @@ app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=5)
 def store_user_data(user_id, score_data):
     db.child("users").child(user_id).child("game_result_task1").push(score_data)
 
+# Storing the result of task1
 @app.route('/save_score', methods=['POST'])
 def save_score():
     user_id = session.get('username', None)
@@ -91,11 +92,13 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        try:
-            user = firebase.auth().sign_in_with_email_and_password(username, password)
-            session["username"] = username  # Store the email or unique identifier in session
-            return redirect(url_for('index'))
-        except Exception as e:
+        users = db.child("users_auth").order_by_child("username").equal_to(username).get()
+        if users.each():
+            for user in users.each():
+                if user.val().get("password") == password:
+                    session["username"] = username
+                    return redirect(url_for('index'))
+
             flash("Username or password is wrong")
             return render_template('login.html')
     else:
@@ -107,12 +110,14 @@ def register():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        try:
-            user = firebase.auth().create_user_with_email_and_password(username, password)
-            return redirect(url_for('login'))
-        except Exception as e:
+
+        existing_user = db.child("users_auth").order_by_child("username").equal_to(username).get()
+        if existing_user.each():
             flash("This email is already registered or an error occurred")
             return render_template('register.html')
+        db.child("users_auth").push({"username":username, "password":password})
+        return redirect(url_for('login'))
+
     else:
         return render_template('register.html')
 
@@ -139,10 +144,14 @@ def task3():
 def profile():
     if 'username' not in session: # {"username": "test@gmail.com"}
         return redirect(url_for('login'))
-    user_id = session["username"].replace('.', '_').replace('@', '_')
-    task1_scores = db.child("users").chile(user_id).child("game")
 
-    return render_template('profile.html')
+    # Getting the score data for the logged-in user
+    user_id = session["username"].replace('.', '_').replace('@', '_')
+    task1_scores = db.child("users").child(user_id).child("game_result_task1").get().val()
+    task2_scores = db.child("users").child(user_id).child("game_result_task2").get().val()
+    task3_scores = db.child("users").child(user_id).child("game_result_task3").get().val()
+
+    return render_template('profile.html', task1 = task1_scores, task2 = task2_scores, task3 = task3_scores)
 
 
 if __name__ == '__main__':
