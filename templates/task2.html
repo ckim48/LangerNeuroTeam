@@ -1,6 +1,6 @@
 {% extends 'header.html' %}
 {% block task2 %}
-    <style>
+     <style>
         /* General page styling */
         body {
             font-family: 'Poppins', sans-serif;
@@ -18,8 +18,37 @@
             background-color: #fff;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
-            padding: 20px;
+/*            padding: 20px;*/
             margin-bottom: 20px;
+        }
+
+        .card-header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .icon-btn{
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .text-2{
+            text-size: 0.9rem;
+        }
+        .paragraph{
+                font-style: italic;
+                font-size: 1.0rem;
         }
 
         .game-area {
@@ -102,43 +131,45 @@
     </style>
 
     <body>
-                <div class="modal fade"  id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Instructions for Task 2: Stoplight Reaction Time Exercise</h5>
+        <div class="modal fade"  id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Instructions for Task 2: Stoplight Reaction Time Exercise</h5>
 
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                               <p>Task 2 will test your reaction time with a stoplight visual that indicates a “go” and a “no-go.” As yo
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                           <p class = "paragraph">Task 2 will test your reaction time with a stoplight visual that indicates a “go” and a “no-go.” As yo
 u go further in this task, the number of “go’s” will increase, while the number of “no-go’s” will decrease.</p>
-                            <ul>
-<li>1. When the stoplight flashes green, click with your mouse. Speed is important, as this measures your reaction time.</li>
-<li>When the stoplight flashes yellow, you must not click.</li>
-<li>If you are successful, the game will continue, and
+                        <ul>
+<li class = "mt-2 text-2">When the stoplight flashes green, click with your mouse. Speed is important, as this measures your reaction time.</li>
+<li class = "mt-2 text-2">When the stoplight flashes yellow, you must not click.</li>
+<li class = "mt-2 text-2">If you are successful, the game will continue, and
 the number of “go’s” and “no-go’s” will change as you progress.</li>
-                            </ul>
-                        </div>
+                        </ul>
                     </div>
                 </div>
             </div>
-
+        </div>
         <div class="container game-container">
 
 
+
             <div class="card">
-                <h1 class="text-center mb-4">Stop and Go Game</h1>
-                 <button type="button" class="icon-btn"  data-bs-toggle="modal" data-bs-target="#infoModal">
-                    <i class="bi bi-info-circle"></i>
-                </button>
+                <div class = "card-header">
+                    <h1 class="text-center">Stop and Go Game</h1>
+                     <button type="button" class="icon-btn"  data-bs-toggle="modal" data-bs-target="#infoModal">
+                        <i class="bi bi-info-circle"></i>
+                    </button>
+                </div>
                 <div id="trial-number" class="text-center"></div>
                 <div class="game-area" id="game-area">
                     <img id="green-light" src="../static/images/assets/green.png" class="traffic-light" alt="Green Light">
                     <img id="red-light" src="../static/images/assets/red.png" class="traffic-light" alt="Red Light">
                     <img id="orange-light" src="../static/images/assets/yellow.png" class="traffic-light" alt="Orange Light">
                 </div>
-                <button type="button" id="start-btn">Start</button>
+                <button type="button" id="start-btn" class="mb-4">Start</button>
             </div>
 
             <div id="break-message" style="display:none;">

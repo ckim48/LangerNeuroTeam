@@ -26,7 +26,7 @@ app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=5)
 
 # Function to store user data in Firebase
 def store_user_data(user_id, score_data):
-    db.child("users").child(user_id).child("task_data").push(score_data)
+    db.child("users").child(user_id).child("game_result_task1").push(score_data)
 
 @app.route('/save_score', methods=['POST'])
 def save_score():
@@ -65,7 +65,23 @@ def add_task2():
     else:
         return {"error": "User not logged in"}
 
-
+@app.route('/add_task3', methods=["POST"])
+def add_task3():
+    if 'username' in session:
+        user_id = session["username"].replace('.', '_').replace('@', '_')
+        data = request.json
+        if data:
+            db.child("users").child(user_id).child("game_result_task3").push({
+                "task": data['task'],
+                "level": data['level'],
+                "rounds_completed": data['roundsCompleted'],
+                "mistakes": data['mistakes']
+            })
+            return {"status": "success"}, 200
+        else:
+            return {"error": "No data received"}, 400
+    else:
+        return {"error": "User not logged in"}, 403
 
 # We added the login page to our web application
 @app.route('/login', methods=["GET", "POST"])
@@ -117,23 +133,7 @@ def task3():
     return render_template('task3.html')
 
 
-@app.route('/add_task3', methods=["POST"])
-def add_task3():
-    if 'username' in session:
-        user_id = session["username"].replace('.', '_').replace('@', '_')
-        data = request.json
-        if data:
-            db.child("users").child(user_id).child("game_result_task3").push({
-                "task": data['task'],
-                "level": data['level'],
-                "rounds_completed": data['roundsCompleted'],
-                "mistakes": data['mistakes']
-            })
-            return {"status": "success"}, 200
-        else:
-            return {"error": "No data received"}, 400
-    else:
-        return {"error": "User not logged in"}, 403
+
 
 
 if __name__ == '__main__':
