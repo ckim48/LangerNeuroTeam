@@ -151,7 +151,18 @@ def profile():
     task2_scores = db.child("users").child(user_id).child("game_result_task2").get().val()
     task3_scores = db.child("users").child(user_id).child("game_result_task3").get().val()
 
-    return render_template('profile.html', task1 = task1_scores, task2 = task2_scores, task3 = task3_scores)
+    if task1_scores is not None:
+        last_task1, task1_scores = next(reversed(task1_scores.items())) # last item of task 1
+
+    if task2_scores is not None: # when user completed task2
+        last_task2, task2_scores = next(reversed(task2_scores.items())) # last item of task 2
+        total_task2 = task2_scores["total_score"] / 120 * 100 # percentage
+        avgtime_task2 = round(task2_scores["avg_response_time"],1)
+    else: # when user did not complete task2
+        total_task2 = None
+        avgtime_task2 = None
+
+    return render_template('profile.html', task1 = task1_scores, task2 = task2_scores, task3 = task3_scores, total_task2 = total_task2,avgtime_task2=avgtime_task2)
 
 
 if __name__ == '__main__':
