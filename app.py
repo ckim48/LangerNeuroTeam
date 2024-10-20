@@ -47,6 +47,8 @@ def index():
         isLogin = True
     return render_template('index.html', isLogin = isLogin)
 
+
+
 db = firebase.database()
 @app.route('/add_task2', methods=["POST"])
 def add_task2():
@@ -133,7 +135,14 @@ def task3():
     return render_template('task3.html')
 
 
+@app.route('/profile')
+def profile():
+    if 'username' not in session: # {"username": "test@gmail.com"}
+        return redirect(url_for('login'))
+    user_id = session["username"].replace('.', '_').replace('@', '_')
+    task1_scores = db.child("users").chile(user_id).child("game")
 
+    return render_template('profile.html')
 
 
 if __name__ == '__main__':
