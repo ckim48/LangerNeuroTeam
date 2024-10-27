@@ -40,17 +40,31 @@ def save_score():
     store_user_data(user_id.replace('.', '_').replace('@', '_'), score_data)
 
     return jsonify({'status': 'success', 'message': 'Score data saved successfully'})
-
+db = firebase.database()
 @app.route('/')
 def index():
     isLogin = False
-    if 'username' in session:
+    istask1_complete = True
+    istask2_complete = True
+    istask3_complete = True
+    if 'username' in session: # {"username" : "testtest"}
         isLogin = True
-    return render_template('index.html', isLogin = isLogin)
+    search_user = session["username"].replace('.', '_').replace('@', '_')  # testing_gmail_com
+    task1_scores = db.child("users").child(search_user).child("game_result_task1").get().val()
+    task2_scores = db.child("users").child(search_user).child("game_result_task2").get().val()
+    task3_scores = db.child("users").child(search_user).child("game_result_task3").get().val()
+    if task1_scores == None:
+        istask1_complete = False
+    if task2_scores == None:
+        istask2_complete = False
+    if task3_scores == None:
+        istask3_complete = False
+
+    return render_template('index.html', isLogin = isLogin, istask1_complete=istask1_complete,istask2_complete=istask2_complete,istask3_complete=istask3_complete)
 
 
 
-db = firebase.database()
+
 @app.route('/add_task2', methods=["POST"])
 def add_task2():
     if 'username' in session:
@@ -129,15 +143,69 @@ def logout():
 
 @app.route('/task')
 def task():
-    return render_template('task1.html')
+    isLogin = False
+    istask1_complete = True
+    istask2_complete = True
+    istask3_complete = True
+    if 'username' in session:
+        isLogin = True
+    if isLogin == False:
+        return redirect(url_for('login'))
+    search_user = session["username"].replace('.', '_').replace('@', '_')  # testing_gmail_com
+    task1_scores = db.child("users").child(search_user).child("game_result_task1").get().val()
+    task2_scores = db.child("users").child(search_user).child("game_result_task2").get().val()
+    task3_scores = db.child("users").child(search_user).child("game_result_task3").get().val()
+    if task1_scores == None:
+        istask1_complete = False
+    if task2_scores == None:
+        istask2_complete = False
+    if task3_scores == None:
+        istask3_complete = False
+    return render_template('task1.html', isLogin = isLogin,istask1_complete=istask1_complete,istask2_complete=istask2_complete,istask3_complete=istask3_complete)
 
 @app.route('/task2')
 def task2():
-    return render_template('task2.html')
+    isLogin = False
+    istask1_complete = True
+    istask2_complete = True
+    istask3_complete = True
+    if 'username' in session:
+        isLogin = True
+    if isLogin == False:
+        return redirect(url_for('login'))
+    search_user = session["username"].replace('.', '_').replace('@', '_')  # testing_gmail_com
+    task1_scores = db.child("users").child(search_user).child("game_result_task1").get().val()
+    task2_scores = db.child("users").child(search_user).child("game_result_task2").get().val()
+    task3_scores = db.child("users").child(search_user).child("game_result_task3").get().val()
+    if task1_scores == None:
+        istask1_complete = False
+    if task2_scores == None:
+        istask2_complete = False
+    if task3_scores == None:
+        istask3_complete = False
+    return render_template('task2.html', isLogin = isLogin,istask1_complete=istask1_complete,istask2_complete=istask2_complete,istask3_complete=istask3_complete)
 
 @app.route('/task3')
 def task3():
-    return render_template('task3.html')
+    isLogin = False
+    istask1_complete = True
+    istask2_complete = True
+    istask3_complete = True
+    if 'username' in session: #
+        isLogin = True
+    if isLogin == False:
+        return redirect(url_for('login'))
+    search_user = session["username"].replace('.', '_').replace('@', '_')  # testing_gmail_com
+    task1_scores = db.child("users").child(search_user).child("game_result_task1").get().val()
+    task2_scores = db.child("users").child(search_user).child("game_result_task2").get().val()
+    task3_scores = db.child("users").child(search_user).child("game_result_task3").get().val()
+    if task1_scores == None:
+        istask1_complete = False
+    if task2_scores == None:
+        istask2_complete = False
+    if task3_scores == None:
+        istask3_complete = False
+    return render_template('task3.html', isLogin = isLogin,istask1_complete=istask1_complete,istask2_complete=istask2_complete,istask3_complete=istask3_complete)
 
 
 @app.route('/profile')
@@ -166,4 +234,4 @@ def profile():
 
 
 if __name__ == '__main__':
-    app.run(debug=True) # run our web application
+    app.run(debug=True, port=8080) # run our web application

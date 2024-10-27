@@ -79,12 +79,12 @@
             color: #6c757d;
             margin-bottom: 20px;
         }
-        .btn {
-            border-radius: 30px;
-            font-size: 18px;
-            padding: 10px 15px;
-            transition: background-color 0.3s ease;
-        }
+/*        .btn {*/
+/*            border-radius: 30px;*/
+/*            font-size: 18px;*/
+/*            padding: 10px 15px;*/
+/*            transition: background-color 0.3s ease;*/
+/*        }*/
         .btn-success {
             background-color: #28a745;
             color: #fff;
@@ -94,6 +94,14 @@
         }
         .text-primary {
             color: #007bff !important;
+        }
+        .btn-disabled{
+            background-color: #f3f3f3;
+            border: 1px solid #f3f3f3;
+        }
+        .btn-disabled:hover{
+            background-color: #f3f3f3;
+            border: 1px solid #f3f3f3;
         }
     </style>
 </head>
@@ -115,7 +123,16 @@
                         <h5 class="text-primary mb-2">Task 1</h5>
                         <h3 class="card-title mb-3">3-D Rotations</h3>
                         <p class="card-text">Rotate the image shown above with your mouse. From the 4 pictures below, choose the one that matches the original image.</p>
-                        <a href="{{url_for('task')}}" class="btn btn-success w-100">Start Task</a>
+
+                        {% if isLogin != True %}
+                        <a href="{{url_for('login')}}" class="btn btn-disabled w-100">Login to Start</a>
+                        {% else %}
+                            {% if istask1_complete == True %}
+                                    <a class="btn btn-disabled w-100">You already finished the task</a>
+                            {% else %}
+                                     <a href="{{url_for('task')}}" class="btn btn-success w-100">Start Task</a>
+                            {% endif %}
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -127,7 +144,15 @@
                         <h3 class="card-title mb-3">Go and No-Go</h3>
                         <p class="card-text">When the traffic light is green, press the space bar. When it's red, stay still. Test your reaction time!</p>
                         <br>
-                        <a href="{{url_for('task2')}}" class="btn btn-success w-100">Start Task</a>
+                        {% if isLogin != True %}
+                        <a href="{{url_for('login')}}" class="btn btn-disabled w-100">Login to Start</a>
+                        {% else %}
+                            {% if istask2_complete == True %}
+                                    <a class="btn btn-disabled w-100">You already finished the task</a>
+                            {% else %}
+                                     <a href="{{url_for('task')}}" class="btn btn-success w-100">Start Task</a>
+                            {% endif %}
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -138,7 +163,15 @@
                         <h5 class="text-primary mb-2">Task 3</h5>
                         <h3 class="card-title mb-3">Sequence Memory</h3>
                         <p class="card-text">Click the square that lights up. Each round adds a new step to the sequence. How long can you keep up?</p>
-                        <a href="{{url_for('task3')}}" class="btn btn-success w-100">Start Task</a>
+                        {% if isLogin != True %}
+                        <a href="{{url_for('login')}}" class="btn btn-disabled w-100">Login to Start</a>
+                        {% else %}
+                            {% if istask3_complete == True %}
+                                    <a class="btn btn-disabled w-100">You already finished the task</a>
+                            {% else %}
+                                     <a href="{{url_for('task')}}" class="btn btn-success w-100">Start Task</a>
+                            {% endif %}
+                        {% endif %}
                     </div>
                 </div>
             </div>

@@ -48,15 +48,22 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{url_for('index')}}">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{url_for('task')}}">Task1</a>
-                    </li>
+
+                    {% if istask1_complete == False %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{url_for('task')}}">Task1</a>
+                        </li>
+                    {% endif %}
+                    {% if istask2_complete == False %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{url_for('task2')}}">Task2</a>
                     </li>
+                    {% endif %}
+                    {% if istask3_complete == False %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{url_for('task3')}}">Task3</a>
                     </li>
+                    {% endif %}
                     <li class="nav-item ms-md-3">
                         {% if isLogin %}
                         <a href="{{url_for('logout')}}" class="btn btn-danger">Logout</a>
