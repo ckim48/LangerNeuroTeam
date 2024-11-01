@@ -44,9 +44,12 @@ db = firebase.database()
 @app.route('/')
 def index():
     isLogin = False
-    istask1_complete = True
-    istask2_complete = True
-    istask3_complete = True
+    istask1_complete =  None
+    istask2_complete =  None
+    istask3_complete =  None
+    task1_scores = None
+    task2_scores = None
+    task3_scores = None
     if 'username' in session: # {"username" : "testtest"}
         isLogin = True
         search_user = session["username"].replace('.', '_').replace('@', '_')  # testing_gmail_com
