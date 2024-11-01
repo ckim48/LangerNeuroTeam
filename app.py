@@ -44,9 +44,9 @@ db = firebase.database()
 @app.route('/')
 def index():
     isLogin = False
-    istask1_complete =  None
-    istask2_complete =  None
-    istask3_complete =  None
+    istask1_complete =  True
+    istask2_complete =  True
+    istask3_complete =  True
     task1_scores = None
     task2_scores = None
     task3_scores = None
