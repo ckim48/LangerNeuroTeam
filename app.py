@@ -49,10 +49,10 @@ def index():
     istask3_complete = True
     if 'username' in session: # {"username" : "testtest"}
         isLogin = True
-    search_user = session["username"].replace('.', '_').replace('@', '_')  # testing_gmail_com
-    task1_scores = db.child("users").child(search_user).child("game_result_task1").get().val()
-    task2_scores = db.child("users").child(search_user).child("game_result_task2").get().val()
-    task3_scores = db.child("users").child(search_user).child("game_result_task3").get().val()
+        search_user = session["username"].replace('.', '_').replace('@', '_')  # testing_gmail_com
+        task1_scores = db.child("users").child(search_user).child("game_result_task1").get().val()
+        task2_scores = db.child("users").child(search_user).child("game_result_task2").get().val()
+        task3_scores = db.child("users").child(search_user).child("game_result_task3").get().val()
     if task1_scores == None:
         istask1_complete = False
     if task2_scores == None:
@@ -149,12 +149,12 @@ def task():
     istask3_complete = True
     if 'username' in session:
         isLogin = True
+        search_user = session["username"].replace('.', '_').replace('@', '_')  # testing_gmail_com
+        task1_scores = db.child("users").child(search_user).child("game_result_task1").get().val()
+        task2_scores = db.child("users").child(search_user).child("game_result_task2").get().val()
+        task3_scores = db.child("users").child(search_user).child("game_result_task3").get().val()
     if isLogin == False:
         return redirect(url_for('login'))
-    search_user = session["username"].replace('.', '_').replace('@', '_')  # testing_gmail_com
-    task1_scores = db.child("users").child(search_user).child("game_result_task1").get().val()
-    task2_scores = db.child("users").child(search_user).child("game_result_task2").get().val()
-    task3_scores = db.child("users").child(search_user).child("game_result_task3").get().val()
     if task1_scores == None:
         istask1_complete = False
     if task2_scores == None:
