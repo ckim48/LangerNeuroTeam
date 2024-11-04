@@ -34,6 +34,7 @@
             align-items: center;
             justify-content: center;
             color: white;
+            font-family: oswald;
             text-align: center;
             position: relative;
         }
@@ -71,7 +72,8 @@
         }
         .card-title {
             font-size: 28px;
-            font-weight: bold;
+            font-weight: 600;
+            font-family: roboto;
         }
         .card-text {
             font-size: 18px;
@@ -92,7 +94,8 @@
             background-color: #218838;
         }
         .text-primary {
-            color: #007bff !important;
+            color: darkorange !important;
+            font-family: roboto;
         }
         .btn-disabled{
             background-color: #f3f3f3;
@@ -102,6 +105,28 @@
             background-color: #f3f3f3;
             border: 1px solid #f3f3f3;
         }
+        .section-title{
+            font-size: 80px;
+            font-weight: 800;
+            font-family: "Oswald";
+            margin-bottom: 20px;
+            color: darkorange;
+            text-transform: uppercase
+        }
+        .section-paragraph{
+            font-size: 18px;
+            font-family: "Roboto";
+            font-weight: 370;
+            margin-bottom: 10px
+            color: black;
+            text-align: justify;
+        }
+        #about img{
+            width: 85%;
+            border-radius: 10px;
+            display: block;
+            margin: 0 auto;
+        }
     </style>
 </head>
 <body>
@@ -109,7 +134,25 @@
 <section class="hero">
     <div class="container">
         <h1>Welcome to Neuro App</h1>
-        <p>Enjoy our mini tasks</p>
+        <p>Enjoy our mini tasks!</p>
+    </div>
+</section>
+
+<section id="about" class="about p-5">
+    <div class="container">
+        <div class="row">
+            <div class = "col-md-6 px-md-4">
+                <div class="section-title">
+                    <h2>About Us</h2>
+                </div>
+                <div class="section-paragraph">
+                    <p>We empower individuals to deepen their mindfulness through science-backed, real-time cognitive assessments. Our platform features three advanced brain power tasks, each designed by cognitive scientists and mindfulness experts to analyze your current level of mindfulness with precision. By combining neurocognition research with actionable insights, we provide more than just scores—we offer a comprehensive look at your mental clarity, attention, and emotional resilience in the moment. Whether you're seeking to reduce stress, increase focus, or enhance self-awareness, MindScope delivers personalized insights to help you cultivate a balanced, mindful state.</p>
+                </div>
+            </div>
+            <div class = "col-md-6">
+                <img class="img-fluid" src ="../static/images/hero-bg.jpg">
+            </div>
+        </div>
     </div>
 </section>
 
