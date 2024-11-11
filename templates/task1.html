@@ -2,176 +2,241 @@
 {% block task1 %}
 <head>
     <style>
-        /* General page styling */
-        body {
-/*            font-family: 'Poppins', sans-serif;*/
-            background-color: #f9f9f9;
-            color: #333;
-        }
- #break-message {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.75);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            text-align: center;
-            color: #fff;
-            font-size: 2rem;
-            pointer-events: none; /* Disable clicks */
-        }
+/* General page styling */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f3f4f6; /* Light gray background */
+    color: #1f2937; /* Darker gray text */
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
 
-        #break-message p {
-            background-color: #28a745;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
+#break-message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    text-align: center;
+    color: #fff;
+    font-size: 2rem;
+    pointer-events: none; /* Disable clicks */
+}
 
-        .task-card {
-            width: 95%;
-            margin: 0 auto;
-            margin-bottom: 50px;
-            border-radius: 12px;
-            background-color: #fff;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
+#break-message p {
+    background-color: #10b981; /* Green for success */
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
 
-        .task-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
-        }
+/* Task card styling */
+.task-card {
+    width: 95%;
+    margin: 30px auto;
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    backdrop-filter: blur(10px);
+}
 
-        .card-header {
-            background-color: #007bff;
-            color: white;
-            padding: 15px;
+.task-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 15px 30px rgba(0, 0, 0, 0.1);
+}
 
-            display: flex;
-            justify-content: space-between;
-            align-items:center;
+/* Modernized card header */
+.card-header {
+    background: linear-gradient(135deg, #4f46e5, #3b82f6); /* Modern gradient */
+    color: #ffffff;
+    padding: 20px;
+    font-size: 1.8rem;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    position: relative;
+    overflow: hidden;
+}
 
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-        .icon-btn{
-            background: none;
-            border: none;
-            color:white;
-            font-size: 1.5rem;
-        }
+.card-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50px;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.3), transparent);
+    transform: rotate(45deg);
+    z-index: 0;
+    pointer-events: none;
+}
 
-        /* Three.js container */
-        #threejs-canvas-container {
-            position: relative;
-            width: 70%;
-            height: 360px;
-            margin: 0 auto;
-            margin-bottom: 30px;
-            background-color: #fff;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
-            overflow: hidden;
-        }
+.card-header h2 {
+    margin: 0;
+    z-index: 1;
+}
 
-        /* Option styling */
-        .option {
-            background-color: #f8f9fa;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            text-align: center;
-            padding: 10px;
-        }
+button.icon-btn {
+    font-size: 1.8rem;
+    color: #ffffff;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, color 0.2s;
+    z-index: 1;
+}
 
-        .option:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            background-color: #e9ecef;
-        }
+button.icon-btn:hover {
+    transform: scale(1.1);
+    color: #c7d2fe; /* Slightly lighter color on hover */
+}
 
-        .option h4 {
-            font-size: 1.25rem;
-            margin-top: 10px;
-            color: #333;
-        }
+/* Subtle animation for body content */
+.card-body {
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 0 0 20px 20px;
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.5s ease-in-out;
+}
 
-        .option-canvas {
-            width: 200px;
-            height: 200px;
-            background-color: #f1f1f1;
-            border-radius: 10px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
-        /* Correct/wrong animation */
-        .success {
-            background-color: #28a745;
-            animation: successAnimation 0.5s ease;
-            color: white;
-        }
+/* Container for Three.js canvas */
+#threejs-canvas-container {
+    position: relative;
+    width: 70%;
+    height: 360px;
+    margin: 20px auto;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
 
-        .wrong {
-            background-color: #dc3545;
-            animation: wrongAnimation 0.5s ease;
-            color: white;
-        }
+/* Option card styling */
+.option {
+    background-color: #e2e8f0; /* Neutral light color */
+    border-radius: 12px;
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+    padding: 10px;
+    cursor: pointer;
+}
 
-        @keyframes successAnimation {
-            0% { background-color: #28a745; }
-            100% { background-color: #fff; }
-        }
+.option:hover {
+    background-color: #cbd5e1; /* Slightly darker on hover */
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
 
-        @keyframes wrongAnimation {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            50% { transform: translateX(10px); }
-            75% { transform: translateX(-10px); }
-        }
+.option h4 {
+    font-size: 1.25rem;
+    margin-top: 10px;
+    color: #1f2937;
+}
 
-        /* Flexbox container to display options in a row and center-align */
-        .centered-options {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: nowrap;  /* Ensure all options stay in one row */
-        }
+.option-canvas {
+    width: 200px;
+    height: 200px;
+    background-color: #f1f5f9;
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            #threejs-canvas-container {
-                width: 90%;
-                height: 300px;
-            }
+/* Correct and wrong option animations */
+.success {
+    background-color: #10b981; /* Green for correct */
+    animation: successAnimation 0.5s ease;
+    color: white;
+}
 
-            .option-canvas {
-                width: 150px;
-                height: 150px;
-            }
+.wrong {
+    background-color: #ef4444; /* Red for incorrect */
+    animation: wrongAnimation 0.5s ease;
+    color: white;
+}
 
-            .centered-options {
-                flex-wrap: wrap;  /* Allow wrapping on smaller screens */
-            }
-        }
-        .font-italic{
-                font-style: italic;
-                font-size: 1.0rem;
-            }
-        .modal-title{
-            font-style: bold;
-            font-size: 1.4rem;
-        }
-        .text1{
-            font-size: 0.9rem;
-        }
+@keyframes successAnimation {
+    0% { background-color: #10b981; }
+    100% { background-color: #ffffff; }
+}
+
+@keyframes wrongAnimation {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    50% { transform: translateX(10px); }
+    75% { transform: translateX(-10px); }
+}
+
+/* Flexbox container for options */
+.centered-options {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: nowrap; /* Ensure all options stay in one row */
+}
+
+/* Responsive design enhancements */
+@media (max-width: 768px) {
+    #threejs-canvas-container {
+        width: 90%;
+        height: 300px;
+    }
+
+    .option-canvas {
+        width: 150px;
+        height: 150px;
+    }
+
+    .centered-options {
+        flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        gap: 15px;
+    }
+
+    .card-header {
+        font-size: 1.5rem;
+        padding: 15px;
+    }
+}
+
+.font-italic {
+    font-style: italic;
+    font-size: 1.0rem;
+}
+
+.modal-title {
+    font-weight: bold;
+    font-size: 1.4rem;
+}
+
+.text1 {
+    font-size: 0.9rem;
+}
     </style>
 
     <!-- Google Fonts -->

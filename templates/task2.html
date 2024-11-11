@@ -1,133 +1,199 @@
 {% extends 'header.html' %}
 {% block task2 %}
      <style>
-        /* General page styling */
-        body {
-/*            font-family: 'Poppins', sans-serif;*/
-            background-color: #f9f9f9;
-            color: #333;
-        }
+/* General page styling */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f3f4f6; /* Light gray background */
+    color: #1f2937; /* Darker gray text */
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
 
-        .game-container {
-            max-width: 600px;
-            margin: 50px auto;
-            text-align: center;
-        }
+/* Game container styling */
+.game-container {
+    max-width: 600px;
+    margin: 50px auto;
+    text-align: center;
+}
 
-        .card {
-            background-color: #fff;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-/*            padding: 20px;*/
-            margin-bottom: 20px;
-        }
+/* Modern card styling */
+.card {
+    background: #ffffff;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.05);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    backdrop-filter: blur(10px);
+}
 
-        .card-header {
-            background-color: #007bff;
-            color: white;
-            padding: 15px;
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 15px 30px rgba(0, 0, 0, 0.1);
+}
 
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+/* Modernized card header */
+.card-header {
+    background: linear-gradient(135deg, #4f46e5, #3b82f6); /* Modern gradient */
+    color: #ffffff;
+    padding: 20px;
+    font-size: 1.8rem;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    position: relative;
+    overflow: hidden;
+}
 
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
+.card-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50px;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.3), transparent);
+    transform: rotate(45deg);
+    z-index: 0;
+    pointer-events: none;
+}
 
-        .icon-btn{
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-        }
+.card-header h2 {
+    margin: 0;
+    z-index: 1;
+}
 
-        .text-2{
-            text-size: 0.9rem;
-        }
-        .paragraph{
-                font-style: italic;
-                font-size: 1.0rem;
-        }
+button.icon-btn {
+    font-size: 1.8rem;
+    color: #ffffff;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, color 0.2s;
+    z-index: 1;
+}
 
-        .game-area {
-            height: 400px;
-            width: 100%;
-            border-radius: 10px;
-            background-color: #f1f1f1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 20px;
-        }
+button.icon-btn:hover {
+    transform: scale(1.1);
+    color: #c7d2fe; /* Slightly lighter color on hover */
+}
 
-        #start-btn {
-            width: 150px;
-            margin: 0 auto;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #007bff;
-            border: none;
-            color: #fff;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.2rem;
-        }
+/* Styling for text inside the card */
+.paragraph {
+    font-style: italic;
+    font-size: 1.0rem;
+    color: #4b5563; /* Slightly darker for contrast */
+}
 
-        #start-btn:hover {
-            background-color: #0056b3;
-        }
+.text-2 {
+    font-size: 0.9rem;
+    color: #6b7280; /* Darker neutral tone */
+}
 
-        #trial-number {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: #007bff;
-        }
+/* Game area styling */
+.game-area {
+    height: 400px;
+    width: 100%;
+    border-radius: 20px;
+    background-color: #f1f5f9; /* Light neutral background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
 
-        .traffic-light {
-            position: absolute;
-            display: block;
-            height: 150px;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
-        }
+/* Start button styling */
+#start-btn {
+    width: 150px;
+    margin: 0 auto;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border: none;
+    color: #fff;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease, transform 0.3s ease;
+}
 
-        .traffic-light.active {
-            opacity: 1;
-            visibility: visible;
-        }
+#start-btn:hover {
+    background: #1e3a8a; /* Darker blue on hover */
+    transform: translateY(-2px);
+}
 
-        #break-message {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.75);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            text-align: center;
-            color: #fff;
-            font-size: 2rem;
-            pointer-events: none;
-        }
+/* Trial number styling */
+#trial-number {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #3b82f6; /* Modern blue */
+}
 
-        #break-message p {
-            background-color: #28a745;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
+/* Traffic light styling */
+.traffic-light {
+    position: absolute;
+    display: block;
+    height: 150px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+}
 
-        @media (max-width: 768px) {
-            .game-area {
-                height: 300px;
-            }
-        }
+.traffic-light.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Break message styling */
+#break-message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    text-align: center;
+    color: #fff;
+    font-size: 2rem;
+}
+
+#break-message p {
+    background-color: #28a745;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .game-area {
+        height: 300px;
+    }
+
+    .card-header {
+        font-size: 1.5rem;
+        padding: 15px;
+    }
+
+    #start-btn {
+        font-size: 1rem;
+        width: 120px;
+    }
+}
+
     </style>
 
     <body>
