@@ -1,0 +1,148 @@
+{% extends 'header.html' %}
+{% block survey_neuro %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pre-Task Survey 2: Neuro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f9f9f9; /* Light gray background */
+            color: #333; /* Soft black for text */
+        }
+        .survey-header {
+            background-color: #e6e6e6; /* Light gray */
+            color: #333;
+            padding: 15px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .card {
+            border: 1px solid #ddd; /* Subtle gray border */
+            background-color: #fff; /* White card background */
+        }
+        .card-header {
+            background-color: #f2f2f2; /* Very light gray */
+            color: #333;
+            font-weight: bold;
+        }
+        .form-label {
+            color: #555; /* Slightly softer gray for labels */
+        }
+        .form-check-label {
+            color: #555; /* Consistent with labels */
+        }
+        .form-select,
+        .form-control {
+            border-color: #ccc;
+            background-color: #fff; /* Keep input backgrounds white */
+        }
+        .form-select:focus,
+        .form-control:focus {
+            border-color: #888; /* Subtle focus effect */
+            box-shadow: none;
+        }
+        .btn-primary {
+            background-color: #555; /* Neutral gray button */
+            border-color: #555;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background-color: #444; /* Slightly darker gray hover */
+            border-color: #444;
+        }
+        .container {
+            max-width: 800px; /* Constrain layout width for better readability */
+        }
+    </style>
+</head>
+<body>
+    <div class="survey-header">
+        <h1>Pre-Task Survey 2: Neuro</h1>
+    </div>
+    <div class="container mt-4">
+        <form method="POST" action="{{ url_for('survey_pre_task_2_neuro') }}">
+
+            <!-- Socioeconomic Status -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Socioeconomic Status (SES)</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Income Bracket -->
+                    <div class="mb-3">
+                        <label for="income" class="form-label">What is your annual household income?</label>
+                        <select class="form-select" id="income" name="income" required>
+                            <option value="">Select an option</option>
+                            <option value="Under $20,000">Under $20,000</option>
+                            <option value="$20,000–$39,999">$20,000–$39,999</option>
+                            <option value="$40,000–$59,999">$40,000–$59,999</option>
+                            <option value="$60,000–$79,999">$60,000–$79,999</option>
+                            <option value="$80,000–$99,999">$80,000–$99,999</option>
+                            <option value="$100,000 or above">$100,000 or above</option>
+                        </select>
+                    </div>
+
+                    <!-- Education Level -->
+                    <div class="mb-3">
+                        <label for="education" class="form-label">What is the highest level of education you have completed?</label>
+                        <select class="form-select" id="education" name="education" required>
+                            <option value="">Select an option</option>
+                            <option value="Less than high school">Less than high school</option>
+                            <option value="High school diploma or equivalent">High school diploma or equivalent</option>
+                            <option value="Some college">Some college</option>
+                            <option value="Associate’s degree">Associate’s degree</option>
+                            <option value="Bachelor’s degree">Bachelor’s degree</option>
+                            <option value="Graduate or professional degree">Graduate or professional degree</option>
+                        </select>
+                    </div>
+
+                    <!-- Employment Status -->
+                    <div class="mb-3">
+                        <label for="employment_status" class="form-label">What is your current employment status?</label>
+                        <select class="form-select" id="employment_status" name="employment_status" required>
+                            <option value="">Select an option</option>
+                            <option value="Employed full-time">Employed full-time</option>
+                            <option value="Employed part-time">Employed part-time</option>
+                            <option value="Self-employed">Self-employed</option>
+                            <option value="Unemployed">Unemployed</option>
+                            <option value="Retired">Retired</option>
+                            <option value="Student">Student</option>
+                        </select>
+                    </div>
+
+                    <!-- Occupation -->
+                    <div class="mb-3">
+                        <label for="occupation" class="form-label">What is your current occupation?</label>
+                        <input type="text" class="form-control" id="occupation" name="occupation" placeholder="Enter your occupation">
+                    </div>
+
+                    <!-- Perceived Social Class -->
+                    <div class="mb-3">
+                        <label for="social_class" class="form-label">How would you classify your social class?</label>
+                        <select class="form-select" id="social_class" name="social_class" required>
+                            <option value="">Select an option</option>
+                            <option value="Lower class">Lower class</option>
+                            <option value="Working class">Working class</option>
+                            <option value="Middle class">Middle class</option>
+                            <option value="Upper-middle class">Upper-middle class</option>
+                            <option value="Upper class">Upper class</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary btn-lg">Submit Survey</button>
+            </div>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+{% endblock %}

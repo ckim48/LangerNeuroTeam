@@ -65,6 +65,11 @@ def index():
 
     return render_template('index.html', isLogin = isLogin, istask1_complete=istask1_complete,istask2_complete=istask2_complete,istask3_complete=istask3_complete)
 
+@app.route('/index2')
+def index2():
+
+
+    return render_template('index2.html')
 
 
 
@@ -234,6 +239,58 @@ def profile():
         avgtime_task2 = None
 
     return render_template('profile.html', task1 = task1_scores, task2 = task2_scores, task3 = task3_scores, total_task2 = total_task2,avgtime_task2=avgtime_task2)
+
+
+@app.route('/survey_pre_task', methods=["GET", "POST"])
+def survey_pre_task():
+    if request.method == "POST":
+
+        demographic_data = {
+            "age": request.form.get("age"),
+            "sex": request.form.get("sex"),
+            "other_sex": request.form.get("other_sex", ""),
+        }
+
+        lms_responses = {f"lms_{i}": request.form.get(f"lms_{i}") for i in range(1, 22)}
+        panas_responses = {f"panas_{i}": request.form.get(f"panas_{i}") for i in range(1, 21)}
+        stai_responses = {f"stai_{i}": request.form.get(f"stai_{i}") for i in range(1, 21)}
+        pss_responses = {f"pss_{i}": request.form.get(f"pss_{i}") for i in range(1, 11)}
+
+        # Save responses to Firebase
+        user_id = session.get("username", "anonymous").replace(".", "_").replace("@", "_")
+        db.child("users").child(user_id).child("survey_pre_task").set({
+            "demographic": demographic_data,
+            "LMS": lms_responses,
+            "PANAS": panas_responses,
+            "STAI": stai_responses,
+            "PSS": pss_responses,
+        })
+
+        flash("Survey submitted successfully!")
+        return redirect(url_for("index"))
+
+    return render_template("survey_pre_task.html")
+
+@app.route('/survey_pre_task_2_neuro', methods=["GET", "POST"])
+def survey_pre_task_2_neuro():
+    if request.method == "POST":
+        # Retrieve survey responses
+        ses_responses = {
+            "income": request.form.get("income"),
+            "education": request.form.get("education"),
+            "employment_status": request.form.get("employment_status"),
+            "occupation": request.form.get("occupation"),
+            "social_class": request.form.get("social_class"),
+        }
+
+
+        user_id = session.get("username", "anonymous").replace(".", "_").replace("@", "_")
+        db.child("users").child(user_id).child("survey_pre_task_2_neuro").set(ses_responses)
+
+        flash("Neuro Pre-Task Survey submitted successfully!")
+        return redirect(url_for("index"))
+
+    return render_template("survey_neuro.html")
 
 
 if __name__ == '__main__':
