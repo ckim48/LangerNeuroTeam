@@ -2,7 +2,9 @@
     max-width: 500px;
     padding: 50px 80px;
 }
-
+.text-justify{
+    text-align:justify;
+}
 /*scott@logncoding.com*/
 #login{
     background: linear-gradient(170deg, #c6a652, #f97a3f);

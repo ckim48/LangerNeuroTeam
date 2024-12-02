@@ -49,7 +49,7 @@
             z-index: -1;
         }
         .hero h1 {
-            font-size: 60px;
+            font-size: 49px;
             font-weight: bold;
             margin-bottom: 20px;
         }
@@ -148,10 +148,9 @@
 
 <section class="hero">
     <div class="container">
-        <h1>The <span class="color-orange">Neuroscience Cognition</span>  Tasks</h1>
-        <p>We have prepared <span class="color-orange">3 tasks</span>  to research the effects of <span class="color-orange">Mindfulness</span> in terms of critical thinking</p>
-        <a class="learn-btn me-2" href="#about">Learn More</a>
-        <a class="learn-btn ms-2" href="{{url_for('study_process')}}">Start Task</a>
+        <h1><span class="color-orange">Mind Over Game:</span> Exploring the Impact of Mental States</h1>
+        <p>To participate in our study, please create an account and complete the assigned tasks to finalize your involvement.</p>
+        <a class="learn-btn me-2" href="{{url_for('register')}}">Create My Account</a>
     </div>
 </section>
 
@@ -162,12 +161,26 @@
                 <div class="section-title">
                     <h2>About Us</h2>
                 </div>
-                <div class="section-paragraph">
-                    <p>We empower individuals to deepen their mindfulness through science-backed, real-time cognitive assessments. Our platform features three advanced brain power tasks, each designed by cognitive scientists and mindfulness experts to analyze your current level of mindfulness with precision. By combining neurocognition research with actionable insights, we provide more than just scores—we offer a comprehensive look at your mental clarity, attention, and emotional resilience in the moment. Whether you're seeking to reduce stress, increase focus, or enhance self-awareness, MindScope delivers personalized insights to help you cultivate a balanced, mindful state.</p>
-                </div>
+
+                    <p class="text-justify">This research seeks to examine the effects of various psychological states, including stress, anxiety, and mood, on neurocognitive functions such as problem-solving and memory retention. Drawing on findings from prior studies, we posit that a positive and relaxed mental state may facilitate enhanced problem-solving capabilities and more effective memory retention. This study aims to expand the understanding of the interplay between emotional well-being and cognitive performance, with potential implications for psychological and educational interventions. This study is being led by <strong>Professor Ellen J. Langer, Department of Psychology, Harvard University.</strong></p>
+
             </div>
             <div class = "col-md-6">
-                <img class="img-fluid" src ="../static/images/hero-bg.jpg">
+                <img class="img-fluid mt-5" src ="../static/images/hero-bg.jpg">
+            </div>
+        </div>
+
+         <div class="row mt-5">
+            <div class = "col-md-6 px-md-4">
+                <div class="section-title">
+                    <h2 class="text-justify">What we will ask you to do</h2>
+                </div>
+
+               <p>The study will be conducted in the following order. Participants will begin with a 10-minute survey to collect demographic information (e.g., gender, age, education) and complete a psychological assessment. This will be followed by a brief 5-minute “warm-up exercise” designed to prepare participants for the subsequent cognitive tasks. The main segment of the experiment will consist of a 20-minute session involving three distinct neuropsychological tasks aimed at evaluating various aspects of cognitive functioning. Finally, participants will complete a concluding survey to provide feedback and offer suggestions for potential future studies, alongside an additional psychological assessment.</p>
+
+            </div>
+            <div class = "col-md-6">
+                <img class="img-fluid" src ="../static/images/web_langer_chart.png">
             </div>
         </div>
     </div>
@@ -198,7 +211,7 @@
                         <h5 class="text-primary mb-2">Task 2</h5>
                         <h3 class="card-title mb-3">Go and No-Go</h3>
                         <p class="card-text">When the traffic light is green, press the space bar. When it's red, stay still. Test your reaction time!</p>
-                        <br>
+
                         {% if isLogin != True %}
                         <a href="{{url_for('login')}}" class="btn btn-disabled w-100">Login to Start</a>
                         {% else %}
