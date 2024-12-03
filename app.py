@@ -70,7 +70,6 @@ def index2():
 
 
     return render_template('index2.html')
-
 @app.route('/study_process', methods=["GET", "POST"])
 def study_process():
     isLogin = False
@@ -78,14 +77,28 @@ def study_process():
         isLogin = True
         user_id = session["username"].replace(".", "_").replace("@", "_")
         progress = db.child("users").child(user_id).child("study_progress").get().val() or {"current_step": 1}
+
+        # Check task completion statuses
+        task1_complete = db.child("users").child(user_id).child("game_result_task1").get().val() is not None
+        task2_complete = db.child("users").child(user_id).child("game_result_task2").get().val() is not None
+        task3_complete = db.child("users").child(user_id).child("game_result_task3").get().val() is not None
+
+        if request.method == "POST":
+            next_step = request.json.get("next_step")
+            if next_step == 4:  # Step 4: Main Tasks
+                # Redirect to the first incomplete task
+                if not task1_complete:
+                    return jsonify({"status": "redirect", "url": url_for("task")})
+                elif not task2_complete:
+                    return jsonify({"status": "redirect", "url": url_for("task2")})
+                elif not task3_complete:
+                    return jsonify({"status": "redirect", "url": url_for("task3")})
+            elif next_step and int(next_step) > progress["current_step"]:
+                db.child("users").child(user_id).child("study_progress").set({"current_step": int(next_step)})
+            return jsonify({"status": "success", "current_step": int(next_step)})
+
     else:
         return redirect(url_for('login'))
-
-    if request.method == "POST":
-        next_step = request.json.get("next_step")
-        if next_step and int(next_step) > progress["current_step"]:
-            db.child("users").child(user_id).child("study_progress").set({"current_step": int(next_step)})
-        return jsonify({"status": "success", "current_step": int(next_step)})
 
     total_steps = 6  # Total number of steps in the process
     return render_template(
@@ -97,7 +110,7 @@ def study_process():
             {"step_number": 1, "title": "Informed Consent", "description": "Please review and provide consent.", "link": "#", "button_text": "Proceed"},
             {"step_number": 2, "title": "Pre-task Survey", "description": "Complete the pre-task survey.", "link": "https://www.jotform.com/build/243310688876063?iak=e9cfc2fe8d6c64782a898247fc0dc840-9725265b79d1c3af", "button_text": "Take Survey"},
             {"step_number": 3, "title": "Warm-up Activities", "description": "Engage in warm-up activities.", "link": "#", "button_text": "Start Warm-up"},
-            {"step_number": 4, "title": "Main Tasks", "description": "Participate in the main study tasks.", "link": "/task", "button_text": "Start Task"},
+            {"step_number": 4, "title": "Main Tasks", "description": "Participate in the main study tasks.", "link": "#", "button_text": "Start Task"},
             {"step_number": 5, "title": "Post-task Surveys", "description": "Complete the post-task surveys.", "link": "https://www.jotform.com/build/243311500343440?iak=70ed55bf4126b2266b381045be46b770-70687ed665837d65", "button_text": "Take Survey"},
             {"step_number": 6, "title": "Debriefing", "description": "Read the debriefing information.", "link": "#", "button_text": "Finish"},
         ]

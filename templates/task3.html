@@ -194,28 +194,38 @@ button.icon-btn:hover {
 
     <body>
         <div class="container">
-                <div class="modal fade"  id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Instructions for 3-D rotations</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <p>General things about task 1</p>
-                                <ul>
-                                    <li>insturction1</li>
-                                    <li>instruction2</li>
-                                    <li>instruciton3</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Instructions for Memory Sequence Game</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>In this game, you will test your memory skills by clicking on squares in the order they light up. The game becomes more challenging as you progress through different levels.</p>
+                <ul>
+                    <li>Easy Level: 3x3 grid. Memorize and click the sequence of up to 5 rounds.</li>
+                    <li>Medium Level: 4x4 grid. The challenge increases with a larger grid.</li>
+                    <li>Hard Level: 5x5 grid. The ultimate test of your memory!</li>
+                </ul>
+                <p>How to play:</p>
+                <ul>
+                    <li>Watch the sequence carefully as the squares light up one by one.</li>
+                    <li>Repeat the sequence by clicking the squares in the correct order.</li>
+                    <li>If you make a mistake, you can try again. However, you are allowed only one mistake per level.</li>
+                    <li>Complete all rounds in a level to progress to the next level.</li>
+                    <li>The game ends if you exceed the allowed mistakes.</li>
+                </ul>
+                <p>Tip: Pay close attention to the sequence and try to remember the order as the grids become more complex!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
         <div class="container game-container">
             <div class="card">
                 <div class="card-header">
-                    <h2 class="text-center">Two-Dimensional Sequence Memory (Task III)</h2>
+                    <h2 class="text-center">Two-Dimensional Sequence Memory</h2>
                     <button type="button" class="icon-btn"  data-bs-toggle="modal" data-bs-target="#infoModal">
                         <i class="bi bi-info-circle"></i>
                     </button>
@@ -372,33 +382,45 @@ button.icon-btn:hover {
                 }
             }
 
-            function saveTaskIIIResult() {
-                const resultData = {
-                    task: 'Task III',
-                    level: level,
-                    roundsCompleted: round - 1,
-                    mistakes: mistakes
-                };
+           function saveTaskIIIResult() {
+    const resultData = {
+        task: 'Task III',
+        level: level,
+        roundsCompleted: round - 1,
+        mistakes: mistakes
+    };
 
-                fetch('/add_task3', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(resultData),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === "success") {
-                        console.log('Task III result saved successfully');
-                    } else {
-                        console.error('Failed to save Task III result:', data.error);
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error saving Task III result:', error);
-                });
-            }
-        </script>
+    fetch('/add_task3', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(resultData),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            console.log('Task III result saved successfully');
+
+            // Show the post-task survey modal
+            const postTaskModal = new bootstrap.Modal(document.getElementById('postTaskModal'));
+            postTaskModal.show();
+
+            // Add event listener to the OK button in the modal
+            document.getElementById('surveyOkButton').addEventListener('click', () => {
+                // Redirect to the post-task survey
+                window.location.href = '/study_process';
+            });
+        } else {
+            console.error('Failed to save Task III result:', data.error);
+        }
+    })
+    .catch((error) => {
+        console.error('Error saving Task III result:', error);
+    });
+}
+
+</script>
+
     </body>
 {% endblock %}

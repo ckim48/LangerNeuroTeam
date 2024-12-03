@@ -411,25 +411,41 @@ the number of “go’s” and “no-go’s” will change as you progress.</li>
             }
 
             function sendTask2Result(resultData) {
-                fetch('/add_task2', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(resultData),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === "success") {
-                        console.log('Task 2 result saved successfully');
-                    } else {
-                        console.error('Failed to save task 2 result:', data.error);
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error saving task 2 result:', error);
-                });
-            }
+    fetch('/add_task2', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(resultData),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            console.log('Task 2 result saved successfully');
+
+            // Redirect to Task 3
+            window.location.href = '/task3';
+        } else {
+            console.error('Failed to save task 2 result:', data.error);
+        }
+    })
+    .catch((error) => {
+        console.error('Error saving task 2 result:', error);
+    });
+}
+
         </script>
+
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    if (!localStorage.getItem('hasSeenTask2Instructions')) {
+        const infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
+        infoModal.show();
+
+        localStorage.setItem('hasSeenTask2Instructions', true);
+    }
+});
+</script>
+
     </body>
 {% endblock %}

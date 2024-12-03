@@ -150,7 +150,11 @@
     <div class="container">
         <h1><span class="color-orange">Mind Over Game:</span> Exploring the Impact of Mental States</h1>
         <p>To participate in our study, please create an account and complete the assigned tasks to finalize your involvement.</p>
-        <a class="learn-btn me-2" href="{{url_for('register')}}">Create My Account</a>
+
+                                {% if isLogin %}
+                        <a href="{{url_for('task')}}" class="btn btn-danger">Start Task</a>
+                        {% else %}
+ <a class="learn-btn me-2" href="{{url_for('register')}}">Create My Account</a>                        {% endif %}
     </div>
 </section>
 
@@ -166,7 +170,7 @@
 
             </div>
             <div class = "col-md-6">
-                <img class="img-fluid mt-5" src ="../static/images/hero-bg.jpg">
+                <img class="img-fluid mt-5" src ="../static/images/about.jpg">
             </div>
         </div>
 
@@ -176,7 +180,7 @@
                     <h2 class="text-justify">What we will ask you to do</h2>
                 </div>
 
-               <p>The study will be conducted in the following order. Participants will begin with a 10-minute survey to collect demographic information (e.g., gender, age, education) and complete a psychological assessment. This will be followed by a brief 5-minute “warm-up exercise” designed to prepare participants for the subsequent cognitive tasks. The main segment of the experiment will consist of a 20-minute session involving three distinct neuropsychological tasks aimed at evaluating various aspects of cognitive functioning. Finally, participants will complete a concluding survey to provide feedback and offer suggestions for potential future studies, alongside an additional psychological assessment.</p>
+               <p class="text-justify">The study will be conducted in the following order. Participants will begin with a 10-minute survey to collect demographic information (e.g., gender, age, education) and complete a psychological assessment. This will be followed by a brief 5-minute “warm-up exercise” designed to prepare participants for the subsequent cognitive tasks. The main segment of the experiment will consist of a 20-minute session involving three distinct neuropsychological tasks aimed at evaluating various aspects of cognitive functioning. Finally, participants will complete a concluding survey to provide feedback and offer suggestions for potential future studies, alongside an additional psychological assessment.</p>
 
             </div>
             <div class = "col-md-6">

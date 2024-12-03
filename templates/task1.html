@@ -565,7 +565,6 @@ function addScoreToCurrentLevel(isCorrect, responseTime) {
         levelScores[levelKey].incorrect++;
     }
 }
-
 function sendScoreData() {
     fetch('/save_score', {
         method: 'POST',
@@ -574,8 +573,20 @@ function sendScoreData() {
             score: score,
             levelScores: levelScores
         })
-    }).then(response => response.json())
-      .then(data => console.log('Score data saved:', data));
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            console.log('Score data saved:', data);
+
+            window.location.href = '/task2';
+        } else {
+            console.error('Failed to save score:', data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error saving score:', error);
+    });
 }
 
 
@@ -643,6 +654,17 @@ function animateMainScene() {
 animateMainScene();
 loadNextLevel();
 
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    if (!localStorage.getItem('hasSeenInstructions')) {
+        const infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
+        infoModal.show();
+
+
+        localStorage.setItem('hasSeenInstructions', true);
+    }
+});
 </script>
 
 </body>

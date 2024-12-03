@@ -158,45 +158,75 @@
 
         <div class="row g-4">
             {% for step in steps %}
-            <div class="col-md-4">
-                <div class="step-card step-{{ step.step_number }} {% if step.step_number > current_step %}inactive{% elif step.step_number == current_step %}active{% endif %}">
-                    <div class="step-number">{{ step.step_number }}</div>
-                    <h3 class="step-title">{{ step.title }}</h3>
-                    <p class="step-description">{{ step.description }}</p>
-                    <a href="{{ step.link }}"
-                       class="btn btn-primary {% if step.step_number > current_step %}disabled{% endif %}">
-                        {{ step.button_text }}
-                    </a>
+<div class="col-md-4">
+    <div class="step-card step-{{ step.step_number }}
+        {% if step.step_number > current_step %}inactive{% elif step.step_number == current_step %}active{% endif %}">
+        <div class="step-number">{{ step.step_number }}</div>
+        <h3 class="step-title">{{ step.title }}</h3>
+        <p class="step-description">{{ step.description }}</p>
+        {% if step.step_number < current_step %}
+            <button class="btn btn-secondary" disabled>Finished</button>
+        {% else %}
+            <a href="{{ step.link }}"
+               class="btn btn-primary {% if step.step_number > current_step %}disabled{% endif %}">
+                {{ step.button_text }}
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="reminderModal" tabindex="-1" aria-labelledby="reminderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reminderModalLabel">Important Reminder</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Please ensure you complete all 6 steps before proceeding to get the best results.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Got it!</button>
+                    <button id="doNotShowAgain" type="button" class="btn btn-primary">Do not show again</button>
                 </div>
             </div>
-            {% endfor %}
         </div>
     </div>
 
     <!-- Bootstrap JS -->
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const steps = document.querySelectorAll('.step-card.active .btn-primary');
-            steps.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const nextStep = parseInt(btn.closest('.step-card').querySelector('.step-number').innerText) + 1;
-                    fetch('{{ url_for("study_process") }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ next_step: nextStep })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.status === 'success') {
-                            location.reload();
-                        }
-                    });
-                });
+      document.addEventListener('DOMContentLoaded', () => {
+    const steps = document.querySelectorAll('.step-card.active .btn-primary');
+    steps.forEach(btn => {
+        btn.addEventListener('click', (event) => {
+            event.preventDefault();
+            const nextStep = parseInt(btn.closest('.step-card').querySelector('.step-number').innerText) + 1;
+            fetch('{{ url_for("study_process") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ next_step: nextStep })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'redirect') {
+                    window.location.href = data.url;  // Redirect to the task page
+                } else if (data.status === 'success') {
+                    location.reload();
+                }
             });
         });
+    });
+});
+
     </script>
 </body>
+
 {% endblock %}
