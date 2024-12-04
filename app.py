@@ -77,7 +77,7 @@ def mindful():
         # Handle user responses
         responses = request.form.to_dict()
         print("Mindful Responses:", responses)
-        return redirect(url_for('index'))  # Redirect after submission
+        return redirect(url_for('study_process'))  # Redirect after submission
     return render_template('mindful.html',isLogin=isLogin)
 
 @app.route('/non-mindful', methods=['GET', 'POST'])
