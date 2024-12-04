@@ -2,40 +2,131 @@
 {% block mindful %}
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <title>Mindful Activity</title>
+    <style>
+        /* General Background and Font */
+body {
+    background-color: #fff8e1; /* Light cream background */
+    font-family: 'Roboto', sans-serif;
+    color: #4d4d4d;
+}
+
+/* Card Styling */
+.card {
+    border-radius: 15px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Orange Theme */
+.text-orange {
+    color: #ff8c42;
+}
+
+.btn-orange {
+    background-color: #ff8c42;
+    border-color: #e67630;
+    color: #fff;
+    transition: 0.3s;
+}
+
+.btn-orange:hover {
+    background-color: #e67630;
+    border-color: #c46220;
+}
+
+/* Rounded Images */
+img {
+    border-radius: 8px;
+}
+
+/* Form Inputs */
+.form-control {
+    border: 1px solid #ff8c42;
+    border-radius: 5px;
+}
+
+.form-check-input:checked {
+    background-color: #ff8c42;
+    border-color: #ff8c42;
+}
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="mt-5">Mindful Group Activity</h1>
-        <form method="POST">
-            <p>1. Can you spot the missing fruit?</p>
-            <img src="{{ url_for('static', filename='fruits.jpg') }}" alt="Fruits" class="img-fluid">
-            <br>
-            <input type="radio" name="q1" value="Yes"> Yes, I see the missing fruit.<br>
-            <input type="radio" name="q1" value="No"> No, I don't see the missing fruit.<br>
+    <div class="container py-5">
+        <div class="card shadow-lg">
+            <div class="card-body">
+                <h1 class="card-title text-center text-orange mb-4">Mindful Group Activity</h1>
+                <form method="POST">
+                    <div class="mb-4">
+                        <p class="fw-bold">1. Can you spot the missing fruit?</p>
+                        <img src="{{ url_for('static', filename='fruits.jpg') }}" alt="Fruits" class="img-fluid rounded shadow-sm mb-2">
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" name="q1" value="Yes" id="q1Yes">
+                            <label for="q1Yes" class="form-check-label">Yes, I see the missing fruit.</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" name="q1" value="No" id="q1No">
+                            <label for="q1No" class="form-check-label">No, I don't see the missing fruit.</label>
+                        </div>
+                    </div>
 
-            <p>2. Which image do you prefer?</p>
-            <img src="{{ url_for('static', filename='black_white_image.jpg') }}" alt="Black and White Image" class="img-fluid">
-            <br>
-            <input type="radio" name="q2" value="A"> A<br>
-            <input type="radio" name="q2" value="B"> B<br>
+                    <div class="mb-4">
+                        <p class="fw-bold">2. Which image do you prefer?</p>
+                        <img src="{{ url_for('static', filename='black_white_image.jpg') }}" alt="Black and White Image" class="img-fluid rounded shadow-sm mb-2">
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" name="q2" value="A" id="q2A">
+                            <label for="q2A" class="form-check-label">A</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" name="q2" value="B" id="q2B">
+                            <label for="q2B" class="form-check-label">B</label>
+                        </div>
+                    </div>
 
-            <p>3. What can you see here?</p>
-            <img src="{{ url_for('static', filename='vase_faces.jpg') }}" alt="Vase and Faces" class="img-fluid">
-            <br>
-            <input type="radio" name="q3" value="A"> Vase on left, vase on right.<br>
-            <input type="radio" name="q3" value="B"> Vase on left, faces on right.<br>
-            <input type="radio" name="q3" value="C"> Vase on right, faces on left.<br>
-            <input type="radio" name="q3" value="D"> Vases and faces on both sides.<br>
+                    <div class="mb-4">
+                        <p class="fw-bold">3. What can you see here?</p>
+                        <img src="{{ url_for('static', filename='vase_faces.jpg') }}" alt="Vase and Faces" class="img-fluid rounded shadow-sm mb-2">
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" name="q3" value="A" id="q3A">
+                            <label for="q3A" class="form-check-label">Vase on left, vase on right.</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" name="q3" value="B" id="q3B">
+                            <label for="q3B" class="form-check-label">Vase on left, faces on right.</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" name="q3" value="C" id="q3C">
+                            <label for="q3C" class="form-check-label">Vase on right, faces on left.</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" name="q3" value="D" id="q3D">
+                            <label for="q3D" class="form-check-label">Vases and faces on both sides.</label>
+                        </div>
+                    </div>
 
-            <p>4. List three things you notice right now:</p>
-            <input type="text" name="notice1" placeholder="Thing 1"><br>
-            <input type="text" name="notice2" placeholder="Thing 2"><br>
-            <input type="text" name="notice3" placeholder="Thing 3"><br>
-            <button type="submit" class="btn btn-primary mt-3">Submit</button>
-        </form>
+                    <div class="mb-4">
+                        <p class="fw-bold">4. List three things you notice right now:</p>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <input type="text" name="notice1" class="form-control" placeholder="Thing 1">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" name="notice2" class="form-control" placeholder="Thing 2">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" name="notice3" class="form-control" placeholder="Thing 3">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-orange px-5 mt-3">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </body>
-
 {% endblock %}
-

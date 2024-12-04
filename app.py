@@ -7,7 +7,7 @@ import firebase_admin
 from firebase_admin import credentials, auth
 import pyrebase
 from config import firebase_config
-
+import random
 # Loading the secret key
 cred = credentials.Certificate("secret.json")
 # Access to the firebase using the loaded key.
@@ -70,21 +70,27 @@ def index2():
     return render_template('index2.html')
 @app.route('/mindful', methods=['GET', 'POST'])
 def mindful():
+    isLogin = False
+    if 'username' in session: # {"username" : "testtest"}
+        isLogin = True
     if request.method == 'POST':
         # Handle user responses
         responses = request.form.to_dict()
         print("Mindful Responses:", responses)
         return redirect(url_for('index'))  # Redirect after submission
-    return render_template('mindful.html')
+    return render_template('mindful.html',isLogin=isLogin)
 
 @app.route('/non-mindful', methods=['GET', 'POST'])
 def non_mindful():
+    isLogin = False
+    if 'username' in session: # {"username" : "testtest"}
+        isLogin = True
     if request.method == 'POST':
         # Handle user responses
         responses = request.form.to_dict()
         print("Non-Mindful Responses:", responses)
         return redirect(url_for('index'))  # Redirect after submission
-    return render_template('non_mindful.html')
+    return render_template('non_mindful.html',isLogin=isLogin)
 
 @app.route('/study_process', methods=["GET", "POST"])
 def study_process():
@@ -99,9 +105,18 @@ def study_process():
         task2_complete = db.child("users").child(user_id).child("game_result_task2").get().val() is not None
         task3_complete = db.child("users").child(user_id).child("game_result_task3").get().val() is not None
 
+
+
+
+
         if request.method == "POST":
             next_step = request.json.get("next_step")
-            if next_step == 4:  # Step 4: Main Tasks
+            if next_step == 4:
+                group = random.choice(["mindful", "non_mindful"])
+                db.child("users").child(user_id).child("warmup_group").set(group)  # Save chosen group to Firebase
+                return jsonify({"status": "redirect", "url": url_for(group)})
+
+            if next_step == 5:  # Step 4: Main Tasks
                 # Redirect to the first incomplete task
                 if not task1_complete:
                     return jsonify({"status": "redirect", "url": url_for("task")})
