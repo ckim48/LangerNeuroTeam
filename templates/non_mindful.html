@@ -1,0 +1,41 @@
+{% extends 'header.html' %}
+{% block non_mindful %}
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Non-Mindful Activity</title>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Non-Mindful Group Activity</h1>
+        <form method="POST">
+            <p>1. What do you see in the picture?</p>
+            <img src="{{ url_for('static', filename='fruits.jpg') }}" alt="Fruits" class="img-fluid">
+            <br>
+            <input type="radio" name="q1" value="Fruits"> Fruits<br>
+            <input type="radio" name="q1" value="Cars"> Cars<br>
+            <input type="radio" name="q1" value="Buildings"> Buildings<br>
+
+            <p>2. What do you see in the picture?</p>
+            <img src="{{ url_for('static', filename='black_white_image.jpg') }}" alt="Black and White Image" class="img-fluid">
+            <br>
+            <input type="radio" name="q2" value="Black and White"> A black-and-white image<br>
+            <input type="radio" name="q2" value="Colorful Scenery"> A colorful scenery<br>
+
+            <p>3. What can you see here?</p>
+            <img src="{{ url_for('static', filename='vase_faces.jpg') }}" alt="Vase and Faces" class="img-fluid">
+            <br>
+            <input type="radio" name="q3" value="Vase"> I see a vase.<br>
+            <input type="radio" name="q3" value="Two Faces"> I see two faces.<br>
+            <input type="radio" name="q3" value="Both"> I see both.<br>
+
+            <p>4. List three things you notice right now:</p>
+            <input type="text" name="notice1" placeholder="Thing 1"><br>
+            <input type="text" name="notice2" placeholder="Thing 2"><br>
+            <input type="text" name="notice3" placeholder="Thing 3"><br>
+            <button type="submit" class="btn btn-primary mt-3">Submit</button>
+        </form>
+    </div>
+</body>
+
+{% endblock %}
+

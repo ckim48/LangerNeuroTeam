@@ -1,0 +1,41 @@
+{% extends 'header.html' %}
+{% block mindful %}
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Mindful Activity</title>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Mindful Group Activity</h1>
+        <form method="POST">
+            <p>1. Can you spot the missing fruit?</p>
+            <img src="{{ url_for('static', filename='fruits.jpg') }}" alt="Fruits" class="img-fluid">
+            <br>
+            <input type="radio" name="q1" value="Yes"> Yes, I see the missing fruit.<br>
+            <input type="radio" name="q1" value="No"> No, I don't see the missing fruit.<br>
+
+            <p>2. Which image do you prefer?</p>
+            <img src="{{ url_for('static', filename='black_white_image.jpg') }}" alt="Black and White Image" class="img-fluid">
+            <br>
+            <input type="radio" name="q2" value="A"> A<br>
+            <input type="radio" name="q2" value="B"> B<br>
+
+            <p>3. What can you see here?</p>
+            <img src="{{ url_for('static', filename='vase_faces.jpg') }}" alt="Vase and Faces" class="img-fluid">
+            <br>
+            <input type="radio" name="q3" value="A"> Vase on left, vase on right.<br>
+            <input type="radio" name="q3" value="B"> Vase on left, faces on right.<br>
+            <input type="radio" name="q3" value="C"> Vase on right, faces on left.<br>
+            <input type="radio" name="q3" value="D"> Vases and faces on both sides.<br>
+
+            <p>4. List three things you notice right now:</p>
+            <input type="text" name="notice1" placeholder="Thing 1"><br>
+            <input type="text" name="notice2" placeholder="Thing 2"><br>
+            <input type="text" name="notice3" placeholder="Thing 3"><br>
+            <button type="submit" class="btn btn-primary mt-3">Submit</button>
+        </form>
+    </div>
+</body>
+
+{% endblock %}
+

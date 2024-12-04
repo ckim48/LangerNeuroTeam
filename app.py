@@ -67,9 +67,25 @@ def index():
 
 @app.route('/index2')
 def index2():
-
-
     return render_template('index2.html')
+@app.route('/mindful', methods=['GET', 'POST'])
+def mindful():
+    if request.method == 'POST':
+        # Handle user responses
+        responses = request.form.to_dict()
+        print("Mindful Responses:", responses)
+        return redirect(url_for('index'))  # Redirect after submission
+    return render_template('mindful.html')
+
+@app.route('/non-mindful', methods=['GET', 'POST'])
+def non_mindful():
+    if request.method == 'POST':
+        # Handle user responses
+        responses = request.form.to_dict()
+        print("Non-Mindful Responses:", responses)
+        return redirect(url_for('index'))  # Redirect after submission
+    return render_template('non_mindful.html')
+
 @app.route('/study_process', methods=["GET", "POST"])
 def study_process():
     isLogin = False
