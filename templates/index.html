@@ -142,6 +142,10 @@
         .color-orange{
             color: darkorange;
         }
+        .btn-danger2{
+            font-size:21px;
+            padding: 10px 22px;
+        }
     </style>
 </head>
 <body>
@@ -149,10 +153,10 @@
 <section class="hero">
     <div class="container">
         <h1><span class="color-orange">Mind Over Game:</span> Exploring the Impact of Mental States</h1>
-        <p>To participate in our study, please create an account and complete the assigned tasks to finalize your involvement.</p>
+        <p>To participate in our study, please create an account and complete the assigned tasks.</p>
 
                                 {% if isLogin %}
-                        <a href="{{url_for('task')}}" class="btn btn-danger">Start Task</a>
+                        <a href="{{url_for('study_process')}}" class="btn btn-danger btn-danger2">Start Task</a>
                         {% else %}
  <a class="learn-btn me-2" href="{{url_for('register')}}">Create My Account</a>                        {% endif %}
     </div>
@@ -198,7 +202,7 @@
                     <div class="card-body">
                         <h5 class="text-primary mb-2">Task 1</h5>
                         <h3 class="card-title mb-3">3-D Rotations</h3>
-                        <p class="card-text">Rotate the image shown above with your mouse. From the 4 pictures below, choose the one that matches the original image.</p>
+                        <p class="card-text">Rotate the image shown above with your mouse. From the 3 - 4 pictures below, choose the one that matches the original image.</p>
 
                         {% if isLogin != True %}
                         <a href="{{url_for('login')}}" class="btn btn-disabled w-100">Login to Start</a>
@@ -214,7 +218,7 @@
                     <div class="card-body">
                         <h5 class="text-primary mb-2">Task 2</h5>
                         <h3 class="card-title mb-3">Go and No-Go</h3>
-                        <p class="card-text">When the traffic light is green, press the space bar. When it's red, stay still. Test your reaction time!</p>
+                        <p class="card-text">When the traffic light turns green, press the space bar as quickly as possible. When it’s red, stay still and do not press anything. Test your reaction time!</p>
 
                         {% if isLogin != True %}
                         <a href="{{url_for('login')}}" class="btn btn-disabled w-100">Login to Start</a>

@@ -53,6 +53,17 @@
     </style>
 </head>
 <body>
+    <div class="modal fade" id="startModal" tabindex="-1" role="dialog" aria-labelledby="startModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <h5 class="text-orange mb-4">Welcome to the Mindful Activity!</h5>
+                    <p>These are warm-up tasks to prepare you for the main tasks. They are not scored, so enjoy and do your best!</p>
+                    <button type="button" class="btn btn-orange" data-bs-dismiss="modal">Start</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="container py-5">
         <div class="card shadow-lg">
             <div class="card-body">
@@ -77,7 +88,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <img src="../static/images/Fruits_ver1.jpg" alt="Fruits" class="img-fluid rounded shadow-sm">
+                                <img src="../static/img/Fruits_ver1.jpg" alt="Fruits" class="img-fluid rounded shadow-sm">
                             </div>
                         </div>
                     </div>
@@ -101,7 +112,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <img src="../static/images/Cellular_automaton_ver1.jpg" alt="Cellular Automaton" class="img-fluid rounded shadow-sm">
+                                <img src="../static/img/Cellular_automaton_ver1.jpg" alt="Cellular Automaton" class="img-fluid rounded shadow-sm">
                             </div>
                         </div>
                     </div>
@@ -125,7 +136,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <img src="../static/images/Vase_and_faces_2D.jpg" alt="Vase and Faces" class="img-fluid rounded shadow-sm img3 ms-md-5">
+                                <img src="../static/img/Vase_and_faces_2D.jpg" alt="Vase and Faces" class="img-fluid rounded shadow-sm img3 ms-md-5">
                             </div>
                         </div>
                     </div>
@@ -138,5 +149,12 @@
             </div>
         </div>
     </div>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+            $(document).ready(function () {
+            $('#startModal').modal('show');
+        });
+</script>
 </body>
 {% endblock %}

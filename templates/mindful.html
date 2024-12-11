@@ -49,6 +49,18 @@
     </style>
 </head>
 <body>
+    <div class="modal fade" id="startModal" tabindex="-1" role="dialog" aria-labelledby="startModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <h5 class="text-orange mb-4">Welcome to the Mindful Activity!</h5>
+                    <p>These are warm-up tasks to prepare you for the main tasks. They are not scored, so enjoy and do your best!</p>
+                    <button type="button" class="btn btn-orange" data-bs-dismiss="modal">Start</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container py-5">
         <div class="card shadow-lg">
             <div class="card-body">
@@ -59,10 +71,10 @@
                         <p class="fw-bold">1. Can you spot the difference? </p>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <img src="../static/images/Fruits_ver1.jpg" alt="Fruits Version 1" class="img-fluid rounded shadow-sm">
+                                <img src="../static/img/Fruits_ver1.jpg" alt="Fruits Version 1" class="img-fluid rounded shadow-sm">
                             </div>
                             <div class="col-md-6">
-                                <img src="../static/images/Fruits_ver2.jpg" alt="Fruits Version 2" class="img-fluid rounded shadow-sm">
+                                <img src="../static/img/Fruits_ver2.jpg" alt="Fruits Version 2" class="img-fluid rounded shadow-sm">
                             </div>
                         </div>
                         <div class="form-check">
@@ -84,10 +96,10 @@
                         <p class="fw-bold">2. Can you spot the difference? </p>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <img src="../static/images/Cellular_automaton_ver1.jpg" alt="Cellular Automaton Version 1" class="img-fluid rounded shadow-sm">
+                                <img src="../static/img/Cellular_automaton_ver1.jpg" alt="Cellular Automaton Version 1" class="img-fluid rounded shadow-sm">
                             </div>
                             <div class="col-md-6">
-                                <img src="../static/images/Cellular_automaton_ver2.jpg" alt="Cellular Automaton Version 2" class="img-fluid rounded shadow-sm">
+                                <img src="../static/img/Cellular_automaton_ver2.jpg" alt="Cellular Automaton Version 2" class="img-fluid rounded shadow-sm">
                             </div>
                         </div>
                         <div class="form-check">
@@ -109,7 +121,7 @@
                         <p class="fw-bold">3. Can you spot the difference? </p>
                         <div class="row mb-3">
                             <div class="col-md-12">
-                                <img src="../static/images/Vase_and_faces_3D.jpg" alt="Vase and Faces 3D" class="img-fluid rounded shadow-sm">
+                                <img src="../static/img/Vase_and_faces_3D.jpg" alt="Vase and Faces 3D" class="img-fluid rounded shadow-sm">
                             </div>
                         </div>
                         <div class="form-check">
@@ -135,4 +147,11 @@
         </div>
     </div>
 </body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+            $(document).ready(function () {
+            $('#startModal').modal('show');
+        });
+</script>
 {% endblock %}
