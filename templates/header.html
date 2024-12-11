@@ -41,6 +41,7 @@
     </style>
 </head>
 <body>
+{% if show_navbar %}
 <header>
     <nav class="navbar navbar-light bg-light navbar-expand-lg">
         <div class="container-fluid">
@@ -67,6 +68,7 @@
         </div>
     </nav>
 </header>
+{% endif %}
     {% block index %}
     {% endblock %}
     {% block index2 %}

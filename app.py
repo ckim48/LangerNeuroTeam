@@ -63,11 +63,11 @@ def index():
     if task3_scores == None:
         istask3_complete = False
 
-    return render_template('index.html', isLogin = isLogin, istask1_complete=istask1_complete,istask2_complete=istask2_complete,istask3_complete=istask3_complete)
+    return render_template('index.html',show_navbar=True,isLogin = isLogin, istask1_complete=istask1_complete,istask2_complete=istask2_complete,istask3_complete=istask3_complete)
 
 @app.route('/index2')
 def index2():
-    return render_template('index2.html')
+    return render_template('index2.html',show_navbar=True)
 @app.route('/mindful', methods=['GET', 'POST'])
 def mindful():
     isLogin = False
@@ -146,7 +146,7 @@ def study_process():
             {"step_number": 4, "title": "Main Tasks", "description": "Participate in the main study tasks.", "link": "#", "button_text": "Start Task"},
             {"step_number": 5, "title": "Post-task Surveys", "description": "Complete the post-task surveys.", "link": "https://www.jotform.com/build/243311500343440?iak=70ed55bf4126b2266b381045be46b770-70687ed665837d65", "button_text": "Take Survey"},
             {"step_number": 6, "title": "Debriefing", "description": "Read the debriefing information.", "link": "#", "button_text": "Finish"},
-        ]
+        ],show_navbar=True
     )
 
 
@@ -248,7 +248,7 @@ def task():
         istask2_complete = False
     if task3_scores == None:
         istask3_complete = False
-    return render_template('task1.html', isLogin = isLogin,istask1_complete=istask1_complete,istask2_complete=istask2_complete,istask3_complete=istask3_complete)
+    return render_template('task1.html', show_navbar=False, isLogin = isLogin,istask1_complete=istask1_complete,istask2_complete=istask2_complete,istask3_complete=istask3_complete)
 
 @app.route('/task2')
 def task2():
@@ -270,7 +270,7 @@ def task2():
         istask2_complete = False
     if task3_scores == None:
         istask3_complete = False
-    return render_template('task2.html', isLogin = isLogin,istask1_complete=istask1_complete,istask2_complete=istask2_complete,istask3_complete=istask3_complete)
+    return render_template('task2.html', show_navbar=False, isLogin = isLogin,istask1_complete=istask1_complete,istask2_complete=istask2_complete,istask3_complete=istask3_complete)
 
 @app.route('/task3')
 def task3():
@@ -292,7 +292,7 @@ def task3():
         istask2_complete = False
     if task3_scores == None:
         istask3_complete = False
-    return render_template('task3.html', isLogin = isLogin,istask1_complete=istask1_complete,istask2_complete=istask2_complete,istask3_complete=istask3_complete)
+    return render_template('task3.html', show_navbar=False, isLogin = isLogin,istask1_complete=istask1_complete,istask2_complete=istask2_complete,istask3_complete=istask3_complete)
 
 
 @app.route('/profile')
