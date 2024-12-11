@@ -194,12 +194,11 @@ button.icon-btn:hover {
 
     <body>
         <div class="container">
-                <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+<div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Instructions for Memory Sequence Game</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <p>In this game, you will test your memory skills by clicking on squares in the order they light up. The game becomes more challenging as you progress through different levels.</p>
@@ -218,17 +217,19 @@ button.icon-btn:hover {
                 </ul>
                 <p>Tip: Pay close attention to the sequence and try to remember the order as the grids become more complex!</p>
             </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="start-task-btn">Start Game</button>
+            </div>
         </div>
     </div>
 </div>
+
 
         <div class="container game-container">
             <div class="card">
                 <div class="card-header">
                     <h2 class="text-center">Two-Dimensional Sequence Memory</h2>
-                    <button type="button" class="icon-btn"  data-bs-toggle="modal" data-bs-target="#infoModal">
-                        <i class="bi bi-info-circle"></i>
-                    </button>
+
                 </div>
 
                 <div id="message" class="text-center">Click the squares in the order they lit up.</div>
@@ -420,6 +421,18 @@ button.icon-btn:hover {
     });
 }
 
+</script>
+        <script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
+    infoModal.show();
+
+    // Handle the "Start Game" button
+    document.getElementById('start-task-btn').addEventListener('click', () => {
+        infoModal.hide();
+        startGame(); // Begin the game
+    });
+});
 </script>
 
     </body>

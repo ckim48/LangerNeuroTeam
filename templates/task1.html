@@ -244,34 +244,35 @@ button.icon-btn:hover {
 </head>
 <body>
     <div class="container">
-<div class="modal fade"  id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Instructions for 3-D rotations</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-
-                <div class="modal-body px-4 py-4">
-                    <p class = "font-italic">Rotate the image shown in the picture with your mouse. And from the 4 pictures underneath, choose the option which displays the image above.</p>
-                    <ul>
-                        <li class = "text1">The first stages are the Practice Trials. There are 3 trials in this stage.</li>
-                        <li class = "mt-2 text1">The second stages are the Easy Difficulty Trials. There are 10 trials in this stage. You must choose the option shown by the 2x2x2 cube above. </li>
-                        <li class = "mt-2 text1">The third stages are the Medium Difficulty Trials. There are 10 trials in this stage. It is almost identical to the second stage but there are 3 options to chose from.</li>
-                        <li class = "mt-2 text1">The final stages are the Difficult Difficulty Trials. There are 10 trials in this stage. You must choose the option shown by the 3x3x3 cube above from 4 different options.</li>
-                    </ul>
-                </div>
+<div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Instructions for 3-D Rotations</h5>
+            </div>
+            <div class="modal-body px-4 py-4">
+                <p class="font-italic">Rotate the image shown in the picture with your mouse. And from the 4 pictures underneath, choose the option which displays the image above.</p>
+                <ul>
+                    <li class="text1">The first stages are the Practice Trials. There are 3 trials in this stage.</li>
+                    <li class="mt-2 text1">The second stages are the Easy Difficulty Trials. There are 10 trials in this stage. You must choose the option shown by the 2x2x2 cube above. </li>
+                    <li class="mt-2 text1">The third stages are the Medium Difficulty Trials. There are 10 trials in this stage. It is almost identical to the second stage but there are 3 options to choose from.</li>
+                    <li class="mt-2 text1">The final stages are the Difficult Difficulty Trials. There are 10 trials in this stage. You must choose the option shown by the 3x3x3 cube above from 4 different options.</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="start-task-btn">Start Task</button>
             </div>
         </div>
-        </div>
+    </div>
+</div>
 
 
         <div class="card task-card mt-5">
             <div class="card-header">
                 <h2 id="level-title">Practice Trials: 3 trials</h2>
-                <button type="button" class="icon-btn"  data-bs-toggle="modal" data-bs-target="#infoModal">
-                    <i class="bi bi-info-circle"></i>
-                </button>
+<!--                <button type="button" class="icon-btn"  data-bs-toggle="modal" data-bs-target="#infoModal">-->
+<!--                    <i class="bi bi-info-circle"></i>-->
+<!--                </button>-->
             </div>
             <div class="card-body">
                 <div id="threejs-canvas-container"></div>
@@ -655,15 +656,15 @@ animateMainScene();
 loadNextLevel();
 
 </script>
-<script>
+    <script>
 document.addEventListener('DOMContentLoaded', () => {
-    if (!localStorage.getItem('hasSeenInstructions')) {
-        const infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
-        infoModal.show();
+    const infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
+    infoModal.show();
 
-
-        localStorage.setItem('hasSeenInstructions', true);
-    }
+    document.getElementById('start-task-btn').addEventListener('click', () => {
+        infoModal.hide();
+        loadNextLevel(); // Start the first task
+    });
 });
 </script>
 

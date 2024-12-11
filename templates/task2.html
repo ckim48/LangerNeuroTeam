@@ -197,27 +197,27 @@ button.icon-btn:hover {
     </style>
 
     <body>
-        <div class="modal fade"  id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Instructions for Task 2: Stoplight Reaction Time Exercise</h5>
-
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                           <p class = "paragraph">Task 2 will test your reaction time with a stoplight visual that indicates a “go” and a “no-go.” As yo
-u go further in this task, the number of “go’s” will increase, while the number of “no-go’s” will decrease.</p>
-                        <ul>
-<li class = "mt-2 text-2">When the stoplight flashes green, click with your mouse. Speed is important, as this measures your reaction time.</li>
-<li class = "mt-2 text-2">When the stoplight flashes yellow, you must not click.</li>
-<li class = "mt-2 text-2">If you are successful, the game will continue, and
-the number of “go’s” and “no-go’s” will change as you progress.</li>
-                        </ul>
-                    </div>
-                </div>
+<div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Instructions for Task 2: Stoplight Reaction Time Exercise</h5>
+            </div>
+            <div class="modal-body">
+                <p class="paragraph">Task 2 will test your reaction time with a stoplight visual that indicates a “go” and a “no-go.” As you progress, the number of “go’s” will increase, while the number of “no-go’s” will decrease.</p>
+                <ul>
+                    <li class="mt-2 text-2">When the stoplight flashes green, click with your mouse. Speed is important, as this measures your reaction time.</li>
+                    <li class="mt-2 text-2">When the stoplight flashes yellow, you must not click.</li>
+                    <li class="mt-2 text-2">If you are successful, the game will continue, and the number of “go’s” and “no-go’s” will change as you progress.</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="start-task-btn">Start Task</button>
             </div>
         </div>
+    </div>
+</div>
+
         <div class="container game-container">
 
 
@@ -225,9 +225,7 @@ the number of “go’s” and “no-go’s” will change as you progress.</li>
             <div class="card">
                 <div class = "card-header">
                     <h2 class="text-center">Stop and Go Game</h2>
-                     <button type="button" class="icon-btn"  data-bs-toggle="modal" data-bs-target="#infoModal">
-                        <i class="bi bi-info-circle"></i>
-                    </button>
+
                 </div>
                 <div id="trial-number" class="text-center"></div>
                 <div class="game-area" id="game-area">
@@ -438,12 +436,13 @@ the number of “go’s” and “no-go’s” will change as you progress.</li>
 
     <script>
 document.addEventListener('DOMContentLoaded', () => {
-    if (!localStorage.getItem('hasSeenTask2Instructions')) {
-        const infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
-        infoModal.show();
+    const infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
+    infoModal.show();
 
-        localStorage.setItem('hasSeenTask2Instructions', true);
-    }
+    document.getElementById('start-task-btn').addEventListener('click', () => {
+        infoModal.hide();
+        loadNextLevel(); // Start the first task
+    });
 });
 </script>
 
