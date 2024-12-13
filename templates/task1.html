@@ -509,11 +509,9 @@ function selectOption(optionIndex) {
     const selectedCanvas = document.getElementById(`option${optionIndex}`).parentElement;
     const responseTime = (endTime - startTime) / 1000;
 
-
     document.querySelectorAll('.option').forEach(el => {
         el.classList.remove('success', 'wrong');
     });
-
 
     if (optionIndex === correctIndex) {
         selectedCanvas.classList.add('success');
@@ -531,14 +529,12 @@ function selectOption(optionIndex) {
 
         if (currentQuestion === 3 || currentQuestion === 13 || currentQuestion === 23 || currentQuestion === 33) {
             showBreakScreen(() => {
-                if (currentQuestion < totalQuestions) {
+                if (currentQuestion === 33) {
+                    // Transition to task2 after Level 3
                     sendScoreData();
-                    loadNextLevel();
+                    window.location.href = '/task2';
                 } else {
-                    alert("You've completed all the trials!");
-                    console.log("Selected Options:", selectedOptions);
-                    console.log("Time per question:", questionTime);
-                    sendScoreData();
+                    loadNextLevel();
                 }
             });
         } else {
@@ -546,6 +542,7 @@ function selectOption(optionIndex) {
         }
     }, 400);
 }
+
 
 function addScoreToCurrentLevel(isCorrect, responseTime) {
     let levelKey;
@@ -618,7 +615,6 @@ function loadNextLevel() {
     }
 }
 
-
 function showBreakScreen(callback) {
     const breakMessage = document.getElementById('break-message');
     const mainContent = document.querySelector('.container');
@@ -640,7 +636,7 @@ function showBreakScreen(callback) {
 
             mainContent.style.pointerEvents = 'auto';
 
-            callback();
+            callback(); // Call the provided callback function after the break
         }
     }, 1000);
 }
