@@ -91,6 +91,21 @@ button.icon-btn:hover {
     font-size: 1.0rem;
     color: #4b5563; /* Slightly darker for contrast */
 }
+.game-area {
+    height: 400px;
+    width: 100%;
+    border-radius: 20px;
+    background-color: #f1f5f9; /* Light neutral background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.5s ease; /* Smooth transition */
+    position: relative; /* Ensure lights are positioned relative to this container */
+    overflow: hidden; /* Prevent lights from overflowing */
+    z-index: 1; /* Ensure it's below the lights */
+}
 
 .text-2 {
     font-size: 0.9rem;
@@ -138,20 +153,21 @@ button.icon-btn:hover {
     color: #3b82f6; /* Modern blue */
 }
 
-/* Traffic light styling */
 .traffic-light {
     position: absolute;
     display: block;
     height: 150px;
-    opacity: 0;
+    opacity: 0; /* Hidden by default */
     visibility: hidden;
     transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+    z-index: 10; /* Ensure lights appear above the background */
 }
 
 .traffic-light.active {
-    opacity: 1;
+    opacity: 1; /* Make visible */
     visibility: visible;
 }
+
 
 /* Break message styling */
 #break-message {
@@ -201,14 +217,16 @@ button.icon-btn:hover {
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Instructions for Task 2: Stoplight Reaction Time Exercise</h5>
+                <h5 class="modal-title">Instructions for Task 2: Stoplight Taske</h5>
             </div>
             <div class="modal-body">
-                <p class="paragraph">Task 2 will test your reaction time with a stoplight visual that indicates a “go” and a “no-go.” As you progress, the number of “go’s” will increase, while the number of “no-go’s” will decrease.</p>
+                <p class="paragraph">In this task, you will see a stoplight. Press the space bar as quickly as possible only when the stoplight flashes green. Do nothing if the light is red.</p>
                 <ul>
-                    <li class="mt-2 text-2">When the stoplight flashes green, click with your mouse. Speed is important, as this measures your reaction time.</li>
-                    <li class="mt-2 text-2">When the stoplight flashes yellow, you must not click.</li>
-                    <li class="mt-2 text-2">If you are successful, the game will continue, and the number of “go’s” and “no-go’s” will change as you progress.</li>
+                    <li class="mt-2 text-2">Press the space bar quickly if you see this: </li>
+                    <img style="width:31%; display:block; margin: 0 auto;" class="img-fluid mt-3" src="../static/images/assets/green.png">
+                    <li class="mt-2 text-2">Do NOT press the space bar if you see this: </li>
+                    <img style="width:31%; display:block; margin: 0 auto;"  class="img-fluid mt-3" src="../static/images/assets/red.png">
+                    <li class="mt-2 text-2">There will be three rounds, each round with 40 trials. Good luck!</li>
                 </ul>
             </div>
             <div class="modal-footer">
@@ -224,15 +242,16 @@ button.icon-btn:hover {
 
             <div class="card">
                 <div class = "card-header">
-                    <h2 class="text-center">Stop and Go Game</h2>
+                    <h2 class="text-center">Stoplight Task</h2>
 
                 </div>
                 <div id="trial-number" class="text-center"></div>
-                <div class="game-area" id="game-area">
-                    <img id="green-light" src="../static/images/assets/green.png" class="traffic-light" alt="Green Light">
-                    <img id="red-light" src="../static/images/assets/red.png" class="traffic-light" alt="Red Light">
-                    <img id="orange-light" src="../static/images/assets/yellow.png" class="traffic-light" alt="Orange Light">
-                </div>
+<div class="game-area" id="game-area">
+    <img id="green-light" src="../static/images/assets/green.png" class="traffic-light" alt="Green Light">
+    <img id="red-light" src="../static/images/assets/red.png" class="traffic-light" alt="Red Light">
+    <img id="orange-light" src="../static/images/assets/yellow.png" class="traffic-light" alt="Orange Light">
+</div>
+
                 <button type="button" id="start-btn" class="mb-4">Start</button>
             </div>
 
@@ -242,173 +261,179 @@ button.icon-btn:hover {
         </div>
 
         <script>
-            let blockLevels = [
-                { goTrials: 30, noGoTrials: 10 }, // Level 1
-                { goTrials: 25, noGoTrials: 15 }, // Level 2
-                { goTrials: 35, noGoTrials: 5 }   // Level 3
-            ];
+let blockLevels = [
+    { goTrials: 30, noGoTrials: 10 }, // Level 1
+    { goTrials: 25, noGoTrials: 15 }, // Level 2
+    { goTrials: 35, noGoTrials: 5 }   // Level 3
+];
 
-            let currentLevel = 0;
-            let currentTrial = 0;
-            let trials = [];
-            let timeoutId;
-            let gameStarted = false;
-            let isBreakActive = false;
-            let isTrialActive = false;
+let currentLevel = 0;
+let currentTrial = 0;
+let trials = [];
+let timeoutId;
+let gameStarted = false;
+let isBreakActive = false;
+let isTrialActive = false;
 
-            let score = 0;
-            let goTrialResponseTimes = [];
+let score = 0;
+let goTrialResponseTimes = [];
 
-            document.getElementById('start-btn').addEventListener('click', startGame);
-            document.addEventListener('keydown', handleKeydown);
+document.getElementById('start-btn').addEventListener('click', startGame);
+document.addEventListener('keydown', handleKeydown);
 
-            function startGame() {
-                gameStarted = true;
-                currentTrial = 0;
-                currentLevel = 0;
-                score = 0;
-                goTrialResponseTimes = [];
-                trials = generateBalancedTrials(blockLevels[currentLevel]);
-                startNextLevel();
+function startGame() {
+    gameStarted = true;
+    currentTrial = 0;
+    currentLevel = 0;
+    score = 0;
+    goTrialResponseTimes = [];
+    trials = generateBalancedTrials(blockLevels[currentLevel]);
+    startNextLevel();
+}
+
+function startNextLevel() {
+    currentTrial = 0;
+    document.getElementById('break-message').style.display = 'none';
+    showNextTrial();
+}
+
+function generateBalancedTrials(block) {
+    let goTrials = new Array(block.goTrials).fill(1); // Go trials
+    let noGoTrials = new Array(block.noGoTrials).fill(0); // No-Go trials
+    let combinedTrials = goTrials.concat(noGoTrials);
+
+    // Shuffle trials
+    for (let i = combinedTrials.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [combinedTrials[i], combinedTrials[j]] = [combinedTrials[j], combinedTrials[i]];
+    }
+
+    return combinedTrials;
+}
+
+function showNextTrial() {
+    if (currentTrial < trials.length) {
+        isTrialActive = true;
+
+        const gameContainer = document.getElementById('game-area');
+
+        // Step 1: Dark screen transition
+        gameContainer.style.backgroundColor = '#000000'; // Set to dark screen
+        hideAllLights(); // Ensure no light is visible
+        setTimeout(() => {
+            let trialType = trials[currentTrial];
+
+            if (trialType === 1) {
+                // Step 2: Show green light for Go trial
+                switchLight('green-light');
+                startResponseTimer(); // Start timing for Go trial
+            } else {
+                // Step 3: Show red light for No-Go trial
+                switchLight('red-light');
             }
 
-            function startNextLevel() {
-                currentTrial = 0;
-                document.getElementById('break-message').style.display = 'none';
+            timeoutId = setTimeout(() => {
+                // Step 4: End trial and reset
+                isTrialActive = false;
+                currentTrial++;
+                gameContainer.style.backgroundColor = '#f1f5f9'; // Reset background
                 showNextTrial();
-            }
+            }, 2100);
+        }, 700); // Dark screen duration
+    } else {
+        handleLevelCompletion();
+    }
+}
 
-            function generateBalancedTrials(block) {
-                let goTrials = new Array(block.goTrials).fill(1);  // Go trials
-                let noGoTrials = new Array(block.noGoTrials).fill(0);  // No-go trials
-                let combinedTrials = goTrials.concat(noGoTrials);
+function switchLight(lightId) {
+    hideAllLights(); // Ensure other lights are hidden
+    const lightElement = document.getElementById(lightId);
+    if (lightElement) {
+        lightElement.classList.add('active'); // Activate the correct light
+    }
+}
 
-                // Shuffle the trials
-                for (let i = combinedTrials.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [combinedTrials[i], combinedTrials[j]] = [combinedTrials[j], combinedTrials[i]];
-                }
+function hideAllLights() {
+    const lights = ['green-light', 'red-light', 'orange-light'];
+    lights.forEach(lightId => {
+        const lightElement = document.getElementById(lightId);
+        if (lightElement) {
+            lightElement.classList.remove('active'); // Hide all lights
+        }
+    });
+}
 
-                return combinedTrials;
-            }
+function startResponseTimer() {
+    responseStartTime = Date.now();
+}
 
-            function showNextTrial() {
-                if (currentTrial < trials.length) {
-                    updateTrialNumber(currentTrial + 1, trials.length);
-                    isTrialActive = true;
+function handleKeydown(event) {
+    if (event.code === 'Space') {
+        event.preventDefault();
+    }
 
-                    hideAllLights();
-                    showLight('orange-light');
+    if (!isBreakActive && event.code === 'Space' && isTrialActive && gameStarted) {
+        clearTimeout(timeoutId);
 
-                    setTimeout(() => {
-                        let trialType = trials[currentTrial];
-                        if (trialType === 1) {
-                            switchLight('orange-light', 'green-light'); // Go trial
-                            startResponseTimer();  // Start timing for Go trial
-                        } else {
-                            switchLight('orange-light', 'red-light'); // No-go trial
-                        }
+        const trialType = trials[currentTrial];
+        if (trialType === 1) {
+            // Go trial, track response time
+            const responseTime = (Date.now() - responseStartTime) / 1000;
+            goTrialResponseTimes.push(Math.min(responseTime, 2)); // Cap at 2 seconds
+            score++; // Correct response adds to score
+        } else {
+            // No-Go trial, wrong response
+            alert("Oops! You shouldn't press space on the red light!");
+        }
+        isTrialActive = false;
+        currentTrial++;
+        showNextTrial();
+    }
+}
 
-                        timeoutId = setTimeout(() => {
-                            isTrialActive = false;
-                            currentTrial++;
-                            showNextTrial();
-                        }, 2000);
-                    }, 500);
-                } else {
-                    currentLevel++;
-                    if (currentLevel < blockLevels.length) {
-                        showBreakScreen(() => {
-                            trials = generateBalancedTrials(blockLevels[currentLevel]);
-                            startNextLevel();
-                        });
-                    } else {
-                        document.getElementById('game-area').textContent = "Task Complete!";
-                        clearTimeout(timeoutId);
+function handleLevelCompletion() {
+    currentLevel++;
+    if (currentLevel < blockLevels.length) {
+        showBreakScreen(() => {
+            trials = generateBalancedTrials(blockLevels[currentLevel]);
+            startNextLevel();
+        });
+    } else {
+        document.getElementById('game-area').textContent = "Task Complete!";
+        clearTimeout(timeoutId);
+        const totalScore = score;
+        const avgResponseTime = calculateAverage(goTrialResponseTimes);
+        sendTask2Result({ totalScore, avgResponseTime });
+    }
+}
 
-                        // Calculate and send the score and average response time
-                        const totalScore = score;
-                        const avgResponseTime = calculateAverage(goTrialResponseTimes);
-                        sendTask2Result({ totalScore, avgResponseTime });
-                    }
-                }
-            }
+function showBreakScreen(callback) {
+    isBreakActive = true;
+    const breakMessage = document.getElementById('break-message');
+    breakMessage.style.display = 'flex';
+    let timeRemaining = 5;
+    const breakTimerElement = document.getElementById('break-timer');
+    breakTimerElement.textContent = timeRemaining;
 
-            let responseStartTime;
-            function startResponseTimer() {
-                responseStartTime = Date.now();
-            }
+    const breakTimer = setInterval(() => {
+        timeRemaining--;
+        breakTimerElement.textContent = timeRemaining;
 
-            function handleKeydown(event) {
-                if (event.code === 'Space') {
-                    event.preventDefault();
-                }
+        if (timeRemaining === 0) {
+            clearInterval(breakTimer);
+            breakMessage.style.display = 'none';
+            isBreakActive = false;
+            callback();
+        }
+    }, 1000);
+}
 
-                if (!isBreakActive && event.code === 'Space' && isTrialActive && gameStarted) {
-                    clearTimeout(timeoutId);
+function calculateAverage(times) {
+    const total = times.reduce((acc, time) => acc + time, 0);
+    return total / times.length;
+}
 
-                    const trialType = trials[currentTrial];
-                    if (trialType === 1) {
-                        // Go trial, track response time
-                        const responseTime = (Date.now() - responseStartTime) / 1000;
-                        goTrialResponseTimes.push(Math.min(responseTime, 2));  // Cap at 2 seconds
-                        score++;  // Correct response adds to score
-                    } else {
-                        // No-go trial, wrong response
-                        alert("Oops! You shouldn't press space on the red light!");
-                    }
-                    isTrialActive = false;
-                    currentTrial++;
-                    showNextTrial();
-                }
-            }
-
-            function switchLight(fromLightId, toLightId) {
-                document.getElementById(fromLightId).classList.remove('active');
-                document.getElementById(toLightId).classList.add('active');
-            }
-
-            function showLight(lightId) {
-                document.getElementById(lightId).classList.add('active');
-            }
-
-            function hideAllLights() {
-                document.getElementById('green-light').classList.remove('active');
-                document.getElementById('red-light').classList.remove('active');
-                document.getElementById('orange-light').classList.remove('active');
-            }
-
-            function updateTrialNumber(current, total) {
-                document.getElementById('trial-number').innerText = `Trial ${current} of ${total}`;
-            }
-
-            function showBreakScreen(callback) {
-                isBreakActive = true;
-                const breakMessage = document.getElementById('break-message');
-                breakMessage.style.display = 'flex';
-                let timeRemaining = 5;
-                const breakTimerElement = document.getElementById('break-timer');
-                breakTimerElement.textContent = timeRemaining;
-
-                const breakTimer = setInterval(() => {
-                    timeRemaining--;
-                    breakTimerElement.textContent = timeRemaining;
-
-                    if (timeRemaining === 0) {
-                        clearInterval(breakTimer);
-                        breakMessage.style.display = 'none';
-                        isBreakActive = false;
-                        callback();
-                    }
-                }, 1000);
-            }
-
-            function calculateAverage(times) {
-                const total = times.reduce((acc, time) => acc + time, 0);
-                return total / times.length;
-            }
-
-            function sendTask2Result(resultData) {
+function sendTask2Result(resultData) {
     fetch('/add_task2', {
         method: 'POST',
         headers: {

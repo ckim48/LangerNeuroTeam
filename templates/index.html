@@ -155,10 +155,12 @@
         <h1><span class="color-orange">Mind Over Game:</span> Exploring the Impact of Mental States</h1>
         <p>To participate in our study, please create an account and complete the assigned tasks.</p>
 
-                                {% if isLogin %}
-                        <a href="{{url_for('study_process')}}" class="btn btn-danger btn-danger2">Start Task</a>
-                        {% else %}
- <a class="learn-btn me-2" href="{{url_for('register')}}">Create My Account</a>                        {% endif %}
+{% if isLogin %}
+    <a href="{{ url_for('start_task') }}" class="btn btn-danger btn-danger2">Start Task</a>
+{% else %}
+    <a class="learn-btn me-2" href="{{ url_for('register') }}">Create My Account</a>
+{% endif %}
+
     </div>
 </section>
 

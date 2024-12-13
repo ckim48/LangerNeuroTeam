@@ -70,27 +70,23 @@ def index2():
     return render_template('index2.html',show_navbar=True)
 @app.route('/mindful', methods=['GET', 'POST'])
 def mindful():
-    isLogin = False
-    if 'username' in session: # {"username" : "testtest"}
-        isLogin = True
+    isLogin = 'username' in session
     if request.method == 'POST':
         # Handle user responses
         responses = request.form.to_dict()
         print("Mindful Responses:", responses)
-        return redirect(url_for('study_process'))  # Redirect after submission
-    return render_template('mindful.html',isLogin=isLogin, show_navbar=False)
+        return redirect(url_for('task'))  # Redirect to main task after completion
+    return render_template('mindful.html', isLogin=isLogin, show_navbar=False)
 
-@app.route('/non-mindful', methods=['GET', 'POST'])
+@app.route('/non_mindful', methods=['GET', 'POST'])
 def non_mindful():
-    isLogin = False
-    if 'username' in session: # {"username" : "testtest"}
-        isLogin = True
+    isLogin = 'username' in session
     if request.method == 'POST':
         # Handle user responses
         responses = request.form.to_dict()
         print("Non-Mindful Responses:", responses)
-        return redirect(url_for('index'))  # Redirect after submission
-    return render_template('non_mindful.html',isLogin=isLogin, show_navbar=False)
+        return redirect(url_for('task'))  # Redirect to main task after completion
+    return render_template('non_mindful.html', isLogin=isLogin, show_navbar=False)
 
 @app.route('/study_process', methods=["GET", "POST"])
 def study_process():
@@ -149,6 +145,16 @@ def study_process():
         ],show_navbar=True
     )
 
+@app.route('/start_task')
+def start_task():
+    if 'username' in session:
+        user_id = session["username"].replace(".", "_").replace("@", "_")
+        # Randomly assign user to mindful or non-mindful
+        group = random.choice(["mindful", "non_mindful"])
+        db.child("users").child(user_id).child("warmup_group").set(group)  # Save group to Firebase
+        return redirect(url_for(group))
+    else:
+        return redirect(url_for('login'))
 
 
 

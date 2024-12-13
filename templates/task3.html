@@ -201,19 +201,18 @@ button.icon-btn:hover {
                 <h5 class="modal-title">Instructions for Memory Sequence Game</h5>
             </div>
             <div class="modal-body">
-                <p>In this game, you will test your memory skills by clicking on squares in the order they light up. The game becomes more challenging as you progress through different levels.</p>
+                <p>In this task, you will see square grids. In each trial, squares will “light” up in a sequence. Your task is to click on the squares in the order they lit up once the sequence is over. The game will get more difficult as you progress, with larger grids in each round!</p>
                 <ul>
-                    <li>Easy Level: 3x3 grid. Memorize and click the sequence of up to 5 rounds.</li>
-                    <li>Medium Level: 4x4 grid. The challenge increases with a larger grid.</li>
-                    <li>Hard Level: 5x5 grid. The ultimate test of your memory!</li>
+                    <li>Round 1: Sequences in a 3x3 grid.</li>
+                    <li>Round 2: Sequences in a 4x4 grid.</li>
+                    <li>Round 3: Sequences in a 5x5 grid.</li>
                 </ul>
                 <p>How to play:</p>
                 <ul>
-                    <li>Watch the sequence carefully as the squares light up one by one.</li>
-                    <li>Repeat the sequence by clicking the squares in the correct order.</li>
-                    <li>If you make a mistake, you can try again. However, you are allowed only one mistake per level.</li>
-                    <li>Complete all rounds in a level to progress to the next level.</li>
-                    <li>The game ends if you exceed the allowed mistakes.</li>
+                    <li>Watch the sequence carefully.</li>
+                    <li>Once you see “Go!”, click the same squares in the same sequence.</li>
+                    <li>The sequence can be up to 7 squares lighting up in order. </li>
+
                 </ul>
                 <p>Tip: Pay close attention to the sequence and try to remember the order as the grids become more complex!</p>
             </div>
@@ -228,11 +227,11 @@ button.icon-btn:hover {
         <div class="container game-container">
             <div class="card">
                 <div class="card-header">
-                    <h2 class="text-center">Two-Dimensional Sequence Memory</h2>
+                    <h2 class="text-center">Sequence Memory Task</h2>
 
                 </div>
 
-                <div id="message" class="text-center">Click the squares in the order they lit up.</div>
+<!--                <div id="message" class="text-center">Click the squares in the order they lit up.</div>-->
                 <div class="game-area">
                     <div class="grid" id="grid-container"></div>
                 </div>
@@ -240,7 +239,7 @@ button.icon-btn:hover {
             </div>
 
             <div id="break-message">
-                <p>Next level starting in <span id="break-timer">5</span> seconds...</p>
+                <p>Next round starting in <span id="break-timer">5</span> seconds...</p>
             </div>
         </div>
         </div>
@@ -263,11 +262,12 @@ button.icon-btn:hover {
             startButton.addEventListener('click', startGame);
 
             function startGame() {
+                startButtion.style.display = 'none';
                 sequence = [];
                 playerSequence = [];
                 round = 1;
                 mistakes = 0;
-                message.textContent = "Watch the sequence!";
+                message.textContent = "Watch!";
                 generateGrid(gridSize);
                 nextRound();
             }
@@ -289,7 +289,7 @@ button.icon-btn:hover {
                         i++;
                     } else {
                         clearInterval(interval);
-                        message.textContent = "Now, repeat the sequence!";
+                        message.textContent = "Go!";
                     }
                 }, 1000);
             }
@@ -315,14 +315,14 @@ button.icon-btn:hover {
                         saveTaskIIIResult();
                         return;
                     }
-                    message.textContent = `Oops! You have ${maxMistakes - mistakes} tries left.`;
+                    message.textContent = `Wrong`;
                     playerSequence = [];
                     return;
                 }
 
                 if (playerSequence.length === sequence.length) {
                     if (mistakes < maxMistakes) {
-                        message.textContent = `Good job! Moving to round ${round + 1}.`;
+                        message.textContent = `Correct!`;
                         round++;
                         if (round % 5 === 0) {
                             saveTaskIIIResult();  // Save result after each level
@@ -357,10 +357,10 @@ button.icon-btn:hover {
                 level++;
                 if (level === 2) {
                     gridSize = 4;
-                    message.textContent = "Medium Level!";
+                    message.textContent = "2nd round!";
                 } else if (level === 3) {
                     gridSize = 5;
-                    message.textContent = "Hard Level!";
+                    message.textContent = "3rd round!";
                 }
 
                 sequence = [];
