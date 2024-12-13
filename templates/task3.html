@@ -59,6 +59,10 @@
         .square.active {
             background-color: yellow;
         }
+.square.clicked {
+    background-color: orange; /* Highlight color */
+    transition: background-color 0.2s ease;
+}
 
         #message {
             margin-top: 20px;
@@ -198,8 +202,10 @@ button.icon-btn:hover {
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Instructions for Memory Sequence Game</h5>
+                <h5 class="modal-title">Instructions for Task 3: Sequence Memory Task</h5>
             </div>
+            <div id="message" class="text-center"></div>
+
             <div class="modal-body">
                 <p>In this task, you will see square grids. In each trial, squares will “light” up in a sequence. Your task is to click on the squares in the order they lit up once the sequence is over. The game will get more difficult as you progress, with larger grids in each round!</p>
                 <ul>
@@ -217,7 +223,7 @@ button.icon-btn:hover {
                 <p>Tip: Pay close attention to the sequence and try to remember the order as the grids become more complex!</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="start-task-btn">Start Game</button>
+                <button type="button" class="btn btn-primary" id="start-task-btn">Start Task</button>
             </div>
         </div>
     </div>
@@ -232,10 +238,10 @@ button.icon-btn:hover {
                 </div>
 
 <!--                <div id="message" class="text-center">Click the squares in the order they lit up.</div>-->
-                <div class="game-area">
+                <div class="game-area mb-5 mt-5">
                     <div class="grid" id="grid-container"></div>
                 </div>
-                <button type="button" id="start-btn" class="mb-4">Start Game</button>
+                <button type="button" id="start-btn" class="mb-4">Start Task</button>
             </div>
 
             <div id="break-message">
@@ -244,6 +250,7 @@ button.icon-btn:hover {
         </div>
         </div>
         <script>
+
             let sequence = [];
             let playerSequence = [];
             let round = 1;
@@ -260,9 +267,22 @@ button.icon-btn:hover {
             let level = 1;
 
             startButton.addEventListener('click', startGame);
+function activateSquare(index) {
+    const square = document.getElementById(`square${index}`);
+    if (square) {
+        square.classList.add('active'); // Highlight the square
+    }
+}
+
+function deactivateSquare(index) {
+    const square = document.getElementById(`square${index}`);
+    if (square) {
+        square.classList.remove('active'); // Remove the highlight
+    }
+}
 
             function startGame() {
-                startButtion.style.display = 'none';
+                startButton.style.display = 'none';
                 sequence = [];
                 playerSequence = [];
                 round = 1;
@@ -279,62 +299,59 @@ button.icon-btn:hover {
                 showSequence(sequence);
             }
 
-            function showSequence(seq) {
-                let i = 0;
-                const interval = setInterval(() => {
-                    if (i > 0) deactivateSquare(seq[i - 1]);
+let isShowingSequence = false; // Flag to manage input state
+let score = 0; // Keep track of the user's score
 
-                    if (i < seq.length) {
-                        activateSquare(seq[i]);
-                        i++;
-                    } else {
-                        clearInterval(interval);
-                        message.textContent = "Go!";
-                    }
-                }, 1000);
-            }
+function showSequence(seq) {
+    isShowingSequence = true; // Block input while showing sequence
+    let i = 0;
+    const interval = setInterval(() => {
+        if (i > 0) deactivateSquare(seq[i - 1]);
 
-            function activateSquare(index) {
-                const square = document.getElementById(`square${index}`);
-                square.classList.add('active');
-            }
+        if (i < seq.length) {
+            activateSquare(seq[i]);
+            i++;
+        } else {
+            clearInterval(interval);
+            message.textContent = "Go!";
+            isShowingSequence = false; // Allow input after sequence is shown
+        }
+    }, 1000);
+}
+function handlePlayerInput(index) {
+    if (isShowingSequence) return; // Ignore input during sequence display
 
-            function deactivateSquare(index) {
-                const square = document.getElementById(`square${index}`);
-                square.classList.remove('active');
-            }
+    const square = document.getElementById(`square${index}`);
+    // Add the 'clicked' class to visually highlight the square
+    square.classList.add('clicked');
 
-            function handlePlayerInput(index) {
-                playerSequence.push(index);
-                const currentStep = playerSequence.length - 1;
+    // Remove the 'clicked' class after 200ms to create a blinking effect
+    setTimeout(() => {
+        square.classList.remove('clicked');
+    }, 200);
 
-                if (playerSequence[currentStep] !== sequence[currentStep]) {
-                    mistakes++;
-                    if (mistakes > maxMistakes) {
-                        message.textContent = "Game Over! Restart to try again.";
-                        saveTaskIIIResult();
-                        return;
-                    }
-                    message.textContent = `Wrong`;
-                    playerSequence = [];
-                    return;
-                }
+    playerSequence.push(index);
+    const currentStep = playerSequence.length - 1;
 
-                if (playerSequence.length === sequence.length) {
-                    if (mistakes < maxMistakes) {
-                        message.textContent = `Correct!`;
-                        round++;
-                        if (round % 5 === 0) {
-                            saveTaskIIIResult();  // Save result after each level
-                            showBreakScreen(() => {
-                                nextLevel();
-                            });
-                        } else {
-                            setTimeout(nextRound, 1000);
-                        }
-                    }
-                }
-            }
+    // Record score for correct inputs
+    if (playerSequence[currentStep] === sequence[currentStep]) {
+        score++;
+    }
+
+    // Proceed to the next round after the sequence ends
+    if (playerSequence.length === sequence.length) {
+        message.textContent = `Score: ${score}`; // Update score display
+        round++;
+        if (round % 5 === 0) {
+            saveTaskIIIResult(); // Save result after each level
+            showBreakScreen(() => {
+                nextLevel();
+            });
+        } else {
+            setTimeout(nextRound, 1000);
+        }
+    }
+}
 
             function showBreakScreen(callback) {
                 breakMessage.style.display = 'flex';
@@ -353,21 +370,26 @@ button.icon-btn:hover {
                 }, 1000);
             }
 
-            function nextLevel() {
-                level++;
-                if (level === 2) {
-                    gridSize = 4;
-                    message.textContent = "2nd round!";
-                } else if (level === 3) {
-                    gridSize = 5;
-                    message.textContent = "3rd round!";
-                }
+function nextLevel() {
+    level++;
+    if (level === 2) {
+        gridSize = 4;
+        message.textContent = "2nd round!";
+    } else if (level === 3) {
+        gridSize = 5;
+        message.textContent = "3rd round!";
+    } else if (level > 3) {
+        // Redirect the user to the JotForm link after completing level 3
+        window.location.href = "https://www.jotform.com/build/243311500343440?iak=70ed55bf4126b2266b381045be46b770-70687ed665837d65";
+        return;
+    }
 
-                sequence = [];
-                round = 1;
-                generateGrid(gridSize);
-                nextRound();
-            }
+    sequence = [];
+    round = 1;
+    generateGrid(gridSize);
+    nextRound();
+}
+
 
             function generateGrid(size) {
                 gridContainer.style.gridTemplateColumns = `repeat(${size}, 100px)`;
@@ -383,12 +405,14 @@ button.icon-btn:hover {
                 }
             }
 
-           function saveTaskIIIResult() {
+
+// Ensure no error messages or retries; simply keep progressing
+function saveTaskIIIResult() {
     const resultData = {
         task: 'Task III',
         level: level,
         roundsCompleted: round - 1,
-        mistakes: mistakes
+        score: score, // Record the score
     };
 
     fetch('/add_task3', {
@@ -402,16 +426,6 @@ button.icon-btn:hover {
     .then(data => {
         if (data.status === "success") {
             console.log('Task III result saved successfully');
-
-            // Show the post-task survey modal
-            const postTaskModal = new bootstrap.Modal(document.getElementById('postTaskModal'));
-            postTaskModal.show();
-
-            // Add event listener to the OK button in the modal
-            document.getElementById('surveyOkButton').addEventListener('click', () => {
-                // Redirect to the post-task survey
-                window.location.href = '/study_process';
-            });
         } else {
             console.error('Failed to save Task III result:', data.error);
         }
