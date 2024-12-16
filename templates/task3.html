@@ -65,9 +65,10 @@
 }
 
         #message {
-            margin-top: 20px;
-            font-size: 1.2rem;
+/*            margin-top: 20px;*/
+            font-size: 1.6rem;
             color: #007bff;
+            margin-bottom:55px;
         }
 
         #start-btn {
@@ -235,14 +236,14 @@ button.icon-btn:hover {
  <div class="card-header">
     <h2 id="task-header" class="text-center">Sequence Memory Task</h2>
 </div>
-<
+
 
 <!--                <div id="message" class="text-center">Click the squares in the order they lit up.</div>-->
                 <div class="game-area mb-5 mt-5">
                     <div class="grid" id="grid-container"></div>
                 </div>
                 <div id="message" class="text-center"></div>
-                <button type="button" id="start-btn" class="mb-4">Start Task</button>
+<!--                <button type="button" id="start-btn" class="mb-4">Start Task</button>-->
             </div>
 
             <div id="break-message">
@@ -260,14 +261,14 @@ button.icon-btn:hover {
 
             const gridContainer = document.getElementById('grid-container');
             const message = document.getElementById('message');
-            const startButton = document.getElementById('start-btn');
+//            const startButton = document.getElementById('start-btn');
             const breakMessage = document.getElementById('break-message');
             const breakTimerElement = document.getElementById('break-timer');
 
             let gridSize = 3;
             let level = 1;
 
-            startButton.addEventListener('click', startGame);
+//            startButton.addEventListener('click', startGame);
 function activateSquare(index) {
     const square = document.getElementById(`square${index}`);
     if (square) {
@@ -287,7 +288,7 @@ function deactivateSquare(index) {
 }
 
 function startGame() {
-    startButton.style.display = 'none';
+//    startButton.style.display = 'none';
     sequence = [];
     playerSequence = [];
     round = 1;
@@ -373,17 +374,26 @@ function handlePlayerInput(index) {
     } else {
         // If input is incorrect
         mistakes++;
-        if (mistakes > maxMistakes) {
-            updateMessage("Wrong! 🙁"); // Notify user of failure
+        updateMessage("Wrong! 🙁"); // Notify user of the mistake
+
+        // If the player has reached the maximum mistakes, move on to the next round
+        if (playerSequence.length === sequence.length) {
             setTimeout(() => {
-                startButton.style.display = 'block';
-                message.textContent = "Game Over! Try again.";
+//                updateMessage("Moving to the next round!");
+                round++;
+                if (round % 5 === 0) {
+                    saveTaskIIIResult();
+                    showBreakScreen(() => {
+                        nextLevel();
+                    });
+                } else {
+                    setTimeout(nextRound, 1000);
+                }
             }, 1000);
-        } else {
-            updateMessage("Wrong! 🙁"); // Show wrong feedback
         }
     }
 }
+
 
             function showBreakScreen(callback) {
                 breakMessage.style.display = 'flex';
