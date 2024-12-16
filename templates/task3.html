@@ -258,7 +258,9 @@ button.icon-btn:hover {
             let round = 1;
             let mistakes = 0;
             const maxMistakes = 1;
-
+let sequenceLength = 1; // Start with sequence length of 1
+const trialsPerRound = 8; // Number of trials per round
+let trial = 0; // Current trial counter
             const gridContainer = document.getElementById('grid-container');
             const message = document.getElementById('message');
 //            const startButton = document.getElementById('start-btn');
@@ -297,14 +299,41 @@ function startGame() {
     generateGrid(gridSize);
     nextRound();
 }
-
 function nextRound() {
     playerSequence = [];
-    const newSquare = Math.floor(Math.random() * gridSize * gridSize);
-    sequence.push(newSquare);
-    updateMessage("Watch!");
+    sequence = []; // Reset sequence for this trial
+
+    let previousIndex = -1; // To keep track of the last index
+
+    // Generate a new sequence of length `sequenceLength`
+    for (let i = 0; i < sequenceLength; i++) {
+        let newIndex;
+        do {
+            newIndex = Math.floor(Math.random() * gridSize * gridSize);
+        } while (newIndex === previousIndex); // Ensure the new index is different
+
+        sequence.push(newIndex);
+        previousIndex = newIndex; // Update the previous index
+    }
+
+    // Update the message
+    updateMessage(`Watch!`);
+
+    // Show the sequence
     showSequence(sequence);
+
+    // Check if the current trial completes the round
+    if (sequenceLength >= trialsPerRound) {
+        sequenceLength = 1; // Reset sequence length for the next level
+        saveTaskIIIResult(); // Save results at the end of the round
+        showBreakScreen(() => nextLevel()); // Move to the next level
+    } else {
+        sequenceLength++; // Increase sequence length for the next trial
+    }
 }
+
+
+
 
 function updateMessage(text) {
     message.textContent = text;
@@ -314,34 +343,38 @@ let isShowingSequence = false; // Flag to manage input state
 let score = 0; // Keep track of the user's score
 
 function showSequence(seq) {
-    isShowingSequence = true; // Block input while showing sequence
+    isShowingSequence = true; // Block input during sequence display
     let i = 0;
+
     const interval = setInterval(() => {
-        // Deactivate the previous square if not the same as the current
+        // Deactivate the previous square
         if (i > 0) {
             deactivateSquare(seq[i - 1]);
         }
 
-        // Add a brief delay between consecutive activations of the same square
         if (i < seq.length) {
+            // Check if the current square is the same as the previous one
             if (i > 0 && seq[i] === seq[i - 1]) {
-                // Pause briefly before activating the same square again
-                deactivateSquare(seq[i]);
-                setTimeout(() => activateSquare(seq[i]), 200);
+                // Reset the square to its original color before lighting it up again
+                deactivateSquare(seq[i]); // Reset to original color
+                setTimeout(() => activateSquare(seq[i]), 200); // Light up again after a brief pause
             } else {
-                activateSquare(seq[i]);
+                activateSquare(seq[i]); // Light up normally
             }
             i++;
         } else {
             clearInterval(interval);
             deactivateSquare(seq[i - 1]); // Ensure the last square is deactivated
-            updateMessage("Go!");
-            isShowingSequence = false; // Allow input after sequence is shown
+            updateMessage("Go!"); // Allow player to input
+            isShowingSequence = false;
         }
-    }, 1000);
+    }, 1000); // 1-second delay between activations
 }
+
+let allowInput = true;
+
 function handlePlayerInput(index) {
-    if (isShowingSequence) return; // Ignore input during sequence display
+    if (isShowingSequence || !allowInput) return; // Ignore input during sequence display or after a wrong click
 
     const square = document.getElementById(`square${index}`);
     // Add the 'clicked' class to visually highlight the square
@@ -361,7 +394,7 @@ function handlePlayerInput(index) {
             updateMessage("Correct! 🙂"); // Sequence completed successfully
             setTimeout(() => {
                 round++;
-                if (round % 5 === 0) {
+                if (round % 9 === 0) {
                     saveTaskIIIResult(); // Save result after each level
                     showBreakScreen(() => {
                         nextLevel();
@@ -373,26 +406,18 @@ function handlePlayerInput(index) {
         }
     } else {
         // If input is incorrect
+        allowInput = false; // Disable further clicks
         mistakes++;
         updateMessage("Wrong! 🙁"); // Notify user of the mistake
 
-        // If the player has reached the maximum mistakes, move on to the next round
-        if (playerSequence.length === sequence.length) {
-            setTimeout(() => {
-//                updateMessage("Moving to the next round!");
-                round++;
-                if (round % 5 === 0) {
-                    saveTaskIIIResult();
-                    showBreakScreen(() => {
-                        nextLevel();
-                    });
-                } else {
-                    setTimeout(nextRound, 1000);
-                }
-            }, 1000);
-        }
+        // Move immediately to the next trial without waiting
+        setTimeout(() => {
+            allowInput = true; // Re-enable input for the next trial
+            nextRound(); // Go to the next trial
+        }, 1000);
     }
 }
+
 
 
             function showBreakScreen(callback) {
@@ -411,28 +436,29 @@ function handlePlayerInput(index) {
                     }
                 }, 1000);
             }
-
-// Call this function at the start of each level or round
 function nextLevel() {
     level++;
+    sequenceLength = 1; // Reset sequence length for the new level
+
     if (level === 2) {
-        gridSize = 4;
-        message.textContent = "2nd round!";
+        gridSize = 4; // Increase grid size for level 2
     } else if (level === 3) {
-        gridSize = 5;
-        message.textContent = "3rd round!";
+        gridSize = 5; // Increase grid size for level 3
     } else if (level > 3) {
-        // Redirect the user to the JotForm link after completing level 3
+        // Redirect to form if all levels are completed
         window.location.href = "https://form.jotform.com/243311500343440";
         return;
     }
 
     sequence = [];
-    round = 1;
+    round++;
     generateGrid(gridSize);
-    updateTaskHeader(); // Update the header
+    updateTaskHeader();
     nextRound();
 }
+
+
+
 
 
             function generateGrid(size) {
