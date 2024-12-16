@@ -232,10 +232,10 @@ button.icon-btn:hover {
 
         <div class="container game-container">
             <div class="card">
-                <div class="card-header">
-                    <h2 class="text-center">Sequence Memory Task</h2>
+ <div class="card-header">
+    <h2 id="task-header" class="text-center">Sequence Memory Task</h2>
+</div>
 
-                </div>
 
 <!--                <div id="message" class="text-center">Click the squares in the order they lit up.</div>-->
                 <div class="game-area mb-5 mt-5">
@@ -273,6 +273,10 @@ function activateSquare(index) {
         square.classList.add('active'); // Highlight the square
     }
 }
+function updateTaskHeader() {
+    const taskHeader = document.getElementById('task-header');
+    taskHeader.textContent = `Sequence Memory Task: Round ${level}`;
+}
 
 function deactivateSquare(index) {
     const square = document.getElementById(`square${index}`);
@@ -292,12 +296,14 @@ function deactivateSquare(index) {
                 nextRound();
             }
 
-            function nextRound() {
-                playerSequence = [];
-                const newSquare = Math.floor(Math.random() * gridSize * gridSize);
-                sequence.push(newSquare);
-                showSequence(sequence);
-            }
+function nextRound() {
+    playerSequence = [];
+    const newSquare = Math.floor(Math.random() * gridSize * gridSize);
+    sequence.push(newSquare);
+    updateTaskHeader(); // Update the header if needed
+    showSequence(sequence);
+}
+
 
 let isShowingSequence = false; // Flag to manage input state
 let score = 0; // Keep track of the user's score
@@ -306,18 +312,30 @@ function showSequence(seq) {
     isShowingSequence = true; // Block input while showing sequence
     let i = 0;
     const interval = setInterval(() => {
-        if (i > 0) deactivateSquare(seq[i - 1]);
+        // Deactivate the previous square if not the same as the current
+        if (i > 0) {
+            deactivateSquare(seq[i - 1]);
+        }
 
+        // Add a brief delay between consecutive activations of the same square
         if (i < seq.length) {
-            activateSquare(seq[i]);
+            if (i > 0 && seq[i] === seq[i - 1]) {
+                // Pause briefly before activating the same square again
+                deactivateSquare(seq[i]);
+                setTimeout(() => activateSquare(seq[i]), 200);
+            } else {
+                activateSquare(seq[i]);
+            }
             i++;
         } else {
             clearInterval(interval);
+            deactivateSquare(seq[i - 1]); // Ensure the last square is deactivated
             message.textContent = "Go!";
             isShowingSequence = false; // Allow input after sequence is shown
         }
     }, 1000);
 }
+
 function handlePlayerInput(index) {
     if (isShowingSequence) return; // Ignore input during sequence display
 
@@ -370,6 +388,7 @@ function handlePlayerInput(index) {
                 }, 1000);
             }
 
+// Call this function at the start of each level or round
 function nextLevel() {
     level++;
     if (level === 2) {
@@ -387,6 +406,7 @@ function nextLevel() {
     sequence = [];
     round = 1;
     generateGrid(gridSize);
+    updateTaskHeader(); // Update the header
     nextRound();
 }
 
