@@ -204,7 +204,7 @@ button.icon-btn:hover {
             <div class="modal-header">
                 <h5 class="modal-title">Instructions for Task 3: Sequence Memory Task</h5>
             </div>
-            <div id="message" class="text-center"></div>
+
 
             <div class="modal-body">
                 <p>In this task, you will see square grids. In each trial, squares will “light” up in a sequence. Your task is to click on the squares in the order they lit up once the sequence is over. The game will get more difficult as you progress, with larger grids in each round!</p>
@@ -235,7 +235,7 @@ button.icon-btn:hover {
  <div class="card-header">
     <h2 id="task-header" class="text-center">Sequence Memory Task</h2>
 </div>
-
+<div id="message" class="text-center"></div>
 
 <!--                <div id="message" class="text-center">Click the squares in the order they lit up.</div>-->
                 <div class="game-area mb-5 mt-5">
@@ -285,25 +285,28 @@ function deactivateSquare(index) {
     }
 }
 
-            function startGame() {
-                startButton.style.display = 'none';
-                sequence = [];
-                playerSequence = [];
-                round = 1;
-                mistakes = 0;
-                message.textContent = "Watch!";
-                generateGrid(gridSize);
-                nextRound();
-            }
+function startGame() {
+    startButton.style.display = 'none';
+    sequence = [];
+    playerSequence = [];
+    round = 1;
+    mistakes = 0;
+    updateMessage("Watch!");
+    generateGrid(gridSize);
+    nextRound();
+}
 
 function nextRound() {
     playerSequence = [];
     const newSquare = Math.floor(Math.random() * gridSize * gridSize);
     sequence.push(newSquare);
-    updateTaskHeader(); // Update the header if needed
+    updateMessage("Watch!");
     showSequence(sequence);
 }
 
+function updateMessage(text) {
+    message.textContent = text;
+}
 
 let isShowingSequence = false; // Flag to manage input state
 let score = 0; // Keep track of the user's score
@@ -330,12 +333,11 @@ function showSequence(seq) {
         } else {
             clearInterval(interval);
             deactivateSquare(seq[i - 1]); // Ensure the last square is deactivated
-            message.textContent = "Go!";
+            updateMessage("Go!");
             isShowingSequence = false; // Allow input after sequence is shown
         }
     }, 1000);
 }
-
 function handlePlayerInput(index) {
     if (isShowingSequence) return; // Ignore input during sequence display
 
@@ -351,22 +353,33 @@ function handlePlayerInput(index) {
     playerSequence.push(index);
     const currentStep = playerSequence.length - 1;
 
-    // Record score for correct inputs
+    // Check correctness of user input
     if (playerSequence[currentStep] === sequence[currentStep]) {
-        score++;
-    }
-
-    // Proceed to the next round after the sequence ends
-    if (playerSequence.length === sequence.length) {
-        message.textContent = `Score: ${score}`; // Update score display
-        round++;
-        if (round % 5 === 0) {
-            saveTaskIIIResult(); // Save result after each level
-            showBreakScreen(() => {
-                nextLevel();
-            });
+        if (playerSequence.length === sequence.length) {
+            updateMessage("Correct! 🙂"); // Sequence completed successfully
+            setTimeout(() => {
+                round++;
+                if (round % 5 === 0) {
+                    saveTaskIIIResult(); // Save result after each level
+                    showBreakScreen(() => {
+                        nextLevel();
+                    });
+                } else {
+                    setTimeout(nextRound, 1000);
+                }
+            }, 1000);
+        }
+    } else {
+        // If input is incorrect
+        mistakes++;
+        if (mistakes > maxMistakes) {
+            updateMessage("Wrong! 🙁"); // Notify user of failure
+            setTimeout(() => {
+                startButton.style.display = 'block';
+                message.textContent = "Game Over! Try again.";
+            }, 1000);
         } else {
-            setTimeout(nextRound, 1000);
+            updateMessage("Wrong! 🙁"); // Show wrong feedback
         }
     }
 }
