@@ -255,7 +255,7 @@ button.icon-btn:hover {
                 <ul>
                     <li class="text1"><strong>Practice Round:</strong> The first round consists of 3 trials to help you get familiar with the task. In each trial, choose the option that matches the cube shown above.</li>
                     <li class="mt-2 text1"><strong>Main Round Level 1</strong> has 10 trials. In each trial, choose the option that matches the 2x2x2 cube shown above. </li>
-                    <li class="mt-2 text1"><strong>Main Round Level 2</strong> is almost identical to Level 1, but you have 3 options to choose from in each of the 10 trials</li>
+                    <li class="mt-2 text1"><strong>Main Round Level 2</strong> is almost identical to Level 1, but you have 4 options to choose from in each of the 10 trials</li>
                     <li class="mt-2 text1"><strong>Main Round Level 3</strong> also consists of 10 trials. In each trial, choose the option that matches the 3x3x3 cube shown above, with 4 options to choose from.</li>
                 </ul>
             </div>
@@ -614,7 +614,6 @@ function loadNextLevel() {
         loadQuestion(3, 4);
     }
 }
-
 function showBreakScreen(callback) {
     const breakMessage = document.getElementById('break-message');
     const mainContent = document.querySelector('.container');
@@ -622,23 +621,39 @@ function showBreakScreen(callback) {
     mainContent.style.pointerEvents = 'none';
     breakMessage.style.display = 'flex';
 
-    let timeRemaining = 5;
-    const breakTimerElement = document.getElementById('break-timer');
-    breakTimerElement.textContent = timeRemaining;
+    // Check if Task 1 is complete
+    if (currentQuestion === 33) {
+        // Display Task 1 complete message
+        breakMessage.innerHTML = `
+            <p>Task 1 Complete! Redirecting to Task 2...</p>
+        `;
 
-    const breakTimer = setInterval(() => {
-        timeRemaining--;
-        breakTimerElement.textContent = timeRemaining;
-
-        if (timeRemaining === 0) {
-            clearInterval(breakTimer);
+        // Redirect after 3 seconds
+        setTimeout(() => {
             breakMessage.style.display = 'none';
-
             mainContent.style.pointerEvents = 'auto';
+            sendScoreData(); // Save the score and navigate to Task 2
+        }, 3000);
+    } else {
+        // Display Next round timer
+        let timeRemaining = 5;
+        const breakTimerElement = document.getElementById('break-timer');
+        breakMessage.innerHTML = `
+            <p>Next round starting in <span id="break-timer">${timeRemaining}</span> seconds...</p>
+        `;
 
-            callback(); // Call the provided callback function after the break
-        }
-    }, 1000);
+        const breakTimer = setInterval(() => {
+            timeRemaining--;
+            breakTimerElement.textContent = timeRemaining;
+
+            if (timeRemaining === 0) {
+                clearInterval(breakTimer);
+                breakMessage.style.display = 'none';
+                mainContent.style.pointerEvents = 'auto';
+                callback(); // Call the provided callback function after the break
+            }
+        }, 1000);
+    }
 }
 
 

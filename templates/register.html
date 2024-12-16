@@ -65,8 +65,8 @@
                 <form method="POST" action="/register">
                     <input class="form-control mb-3" placeholder="Prolific/Email" name="username">
                     <input class="form-control mb-3" type="password" placeholder="Password" name="password">
-                    <span style="font-size:12px;">If you are a Prolific participant, please use your Prolific ID you copied. If your responses are not linked to your Prolific ID, you may not be able to receive the reward. </span>
-                    <span style="font-size:12px;">*If you do not have a Prolific ID please register with your email. </span>
+                    <p style="font-size:12px;">*If you are a Prolific participant, please use your Prolific ID you copied. If your responses are not linked to your Prolific ID, you may not be able to receive the reward. </p>
+                    <p style="font-size:12px;">*If you do not have a Prolific ID please register with your email. </p>
 
                     {% with messages = get_flashed_messages() %}
                         {% if messages %}

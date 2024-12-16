@@ -217,7 +217,7 @@ button.icon-btn:hover {
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Instructions for Task 2: Stoplight Taske</h5>
+                <h5 class="modal-title">Instructions for Task 2: Stoplight Task</h5>
             </div>
             <div class="modal-body">
                 <p class="paragraph">In this task, you will see a stoplight. Press the space bar as quickly as possible only when the stoplight flashes green. Do nothing if the light is red.</p>
@@ -242,7 +242,7 @@ button.icon-btn:hover {
 
             <div class="card">
                 <div class = "card-header">
-                    <h2 class="text-center">Stoplight Task</h2>
+        <h2 class="text-center" id="task-header">Stoplight Task</h2>
 
                 </div>
                 <div id="trial-number" class="text-center"></div>
@@ -256,7 +256,7 @@ button.icon-btn:hover {
             </div>
 
             <div id="break-message" style="display:none;">
-                <p>Next level starting in <span id="break-timer">5</span> seconds...</p>
+                <p>Next round starting in <span id="break-timer">5</span> seconds...</p>
             </div>
         </div>
 
@@ -278,8 +278,17 @@ let isTrialActive = false;
 let score = 0;
 let goTrialResponseTimes = [];
 
-document.getElementById('start-btn').addEventListener('click', startGame);
 document.addEventListener('keydown', handleKeydown);
+
+document.getElementById('start-btn').addEventListener('click', () => {
+    document.getElementById('start-btn').style.display = 'none'; // Hide the start button
+    startGame();
+});
+
+function updateTaskHeader(roundNumber) {
+    const taskHeader = document.getElementById('task-header');
+    taskHeader.textContent = `Stoplight Task: Round ${roundNumber}`;
+}
 
 function startGame() {
     gameStarted = true;
@@ -288,8 +297,10 @@ function startGame() {
     score = 0;
     goTrialResponseTimes = [];
     trials = generateBalancedTrials(blockLevels[currentLevel]);
+    updateTaskHeader(currentLevel + 1); // Set initial round header
     startNextLevel();
 }
+
 
 function startNextLevel() {
     currentTrial = 0;
@@ -383,7 +394,7 @@ function handleKeydown(event) {
             score++; // Correct response adds to score
         } else {
             // No-Go trial, wrong response
-            alert("Oops! You shouldn't press space on the red light!");
+            alert("Oops! You shouldn't press space bar on the red light!");
         }
         isTrialActive = false;
         currentTrial++;
@@ -394,6 +405,7 @@ function handleKeydown(event) {
 function handleLevelCompletion() {
     currentLevel++;
     if (currentLevel < blockLevels.length) {
+        updateTaskHeader(currentLevel + 1); // Update header for next round
         showBreakScreen(() => {
             trials = generateBalancedTrials(blockLevels[currentLevel]);
             startNextLevel();
@@ -406,26 +418,44 @@ function handleLevelCompletion() {
         sendTask2Result({ totalScore, avgResponseTime });
     }
 }
-
 function showBreakScreen(callback) {
     isBreakActive = true;
     const breakMessage = document.getElementById('break-message');
-    breakMessage.style.display = 'flex';
-    let timeRemaining = 5;
-    const breakTimerElement = document.getElementById('break-timer');
-    breakTimerElement.textContent = timeRemaining;
 
-    const breakTimer = setInterval(() => {
-        timeRemaining--;
+    if (currentLevel >= blockLevels.length) {
+        // Display "Task Complete" after the final level
+        breakMessage.innerHTML = `<p>Task Complete! Redirecting to Task 3...</p>`;
+        breakMessage.style.display = 'flex';
+
+        // Redirect after 3 seconds
+        setTimeout(() => {
+            breakMessage.style.display = 'none';
+            clearTimeout(timeoutId);
+            const totalScore = score;
+            const avgResponseTime = calculateAverage(goTrialResponseTimes);
+            sendTask2Result({ totalScore, avgResponseTime });
+        }, 3000);
+    } else {
+        // Show break message for intermediate levels
+        breakMessage.innerHTML = `<p>Next round starting in <span id="break-timer">5</span> seconds...</p>`;
+        breakMessage.style.display = 'flex';
+
+        let timeRemaining = 5;
+        const breakTimerElement = document.getElementById('break-timer');
         breakTimerElement.textContent = timeRemaining;
 
-        if (timeRemaining === 0) {
-            clearInterval(breakTimer);
-            breakMessage.style.display = 'none';
-            isBreakActive = false;
-            callback();
-        }
-    }, 1000);
+        const breakTimer = setInterval(() => {
+            timeRemaining--;
+            breakTimerElement.textContent = timeRemaining;
+
+            if (timeRemaining === 0) {
+                clearInterval(breakTimer);
+                breakMessage.style.display = 'none';
+                isBreakActive = false;
+                callback(); // Start the next level automatically
+            }
+        }, 1000);
+    }
 }
 
 function calculateAverage(times) {
