@@ -343,99 +343,103 @@ let isShowingSequence = false; // Flag to manage input state
 let score = 0; // Keep track of the user's score
 
 function showSequence(seq) {
-    isShowingSequence = true; // Block input during sequence display
+    if (breakMessage.style.display === 'flex') return; // Prevent blinking during break screen
+
+    isShowingSequence = true;
+    allowInput = false;
+    playerSequence = []; // Clear player's input for the new trial
+
+    // Deactivate all squares before showing the new sequence
+    const allSquares = document.querySelectorAll('.square');
+    allSquares.forEach(square => square.classList.remove('active'));
+
     let i = 0;
 
     const interval = setInterval(() => {
-        // Deactivate the previous square
-        if (i > 0) {
-            deactivateSquare(seq[i - 1]);
+        if (breakMessage.style.display === 'flex') {
+            clearInterval(interval); // Stop sequence if break screen is active
+            return;
         }
 
+        if (i > 0) deactivateSquare(seq[i - 1]); // Turn off the previous square
         if (i < seq.length) {
-            // Check if the current square is the same as the previous one
-            if (i > 0 && seq[i] === seq[i - 1]) {
-                // Reset the square to its original color before lighting it up again
-                deactivateSquare(seq[i]); // Reset to original color
-                setTimeout(() => activateSquare(seq[i]), 200); // Light up again after a brief pause
-            } else {
-                activateSquare(seq[i]); // Light up normally
-            }
+            activateSquare(seq[i]); // Turn on the next square
             i++;
         } else {
             clearInterval(interval);
-            deactivateSquare(seq[i - 1]); // Ensure the last square is deactivated
-            updateMessage("Go!"); // Allow player to input
+            deactivateSquare(seq[i - 1]); // Turn off the last square
+            updateMessage("Go!");
             isShowingSequence = false;
+            allowInput = true;
+
+            // Start the 5-second timeout timer
+            timeoutTimer = setTimeout(() => {
+                allowInput = false;
+                checkPlayerSequence(); // Automatically check after timeout
+            }, 5000);
         }
-    }, 1000); // 1-second delay between activations
+    }, 1000);
 }
 
-let allowInput = true;
+
+let timeoutTimer; // Timer variable for 5 seconds after 'Go!'
+let allowInput = true; // Controls input clicks
 
 function handlePlayerInput(index) {
-    if (isShowingSequence || !allowInput) return; // Ignore input during sequence display or after a wrong click
+    if (isShowingSequence || !allowInput) return;
 
     const square = document.getElementById(`square${index}`);
-    // Add the 'clicked' class to visually highlight the square
     square.classList.add('clicked');
-
-    // Remove the 'clicked' class after 200ms to create a blinking effect
-    setTimeout(() => {
-        square.classList.remove('clicked');
-    }, 200);
+    setTimeout(() => square.classList.remove('clicked'), 200);
 
     playerSequence.push(index);
-    const currentStep = playerSequence.length - 1;
 
-    // Check correctness of user input
-    if (playerSequence[currentStep] === sequence[currentStep]) {
-        if (playerSequence.length === sequence.length) {
-            updateMessage("Correct! 🙂"); // Sequence completed successfully
-            setTimeout(() => {
-                round++;
-                if (round % 9 === 0) {
-                    saveTaskIIIResult(); // Save result after each level
-                    showBreakScreen(() => {
-                        nextLevel();
-                    });
-                } else {
-                    setTimeout(nextRound, 1000);
-                }
-            }, 1000);
-        }
-    } else {
-        // If input is incorrect
+    // Check only after the user clicks the full sequence length
+    if (playerSequence.length === sequence.length) {
+        clearTimeout(timeoutTimer); // Stop the timeout timer
         allowInput = false; // Disable further clicks
-        mistakes++;
-        updateMessage("Wrong! 🙁"); // Notify user of the mistake
-
-        // Move immediately to the next trial without waiting
-        setTimeout(() => {
-            allowInput = true; // Re-enable input for the next trial
-            nextRound(); // Go to the next trial
-        }, 1000);
+        checkPlayerSequence();
     }
 }
 
 
 
-            function showBreakScreen(callback) {
-                breakMessage.style.display = 'flex';
-                let timeRemaining = 5;
-                breakTimerElement.textContent = timeRemaining;
 
-                const breakTimer = setInterval(() => {
-                    timeRemaining--;
-                    breakTimerElement.textContent = timeRemaining;
+function showBreakScreen(callback) {
+    breakMessage.style.display = 'flex';
+    let timeRemaining = 5;
 
-                    if (timeRemaining === 0) {
-                        clearInterval(breakTimer);
-                        breakMessage.style.display = 'none';
-                        callback();
-                    }
-                }, 1000);
+    if (level >= 3) {
+        // Final message after Round 3
+        breakMessage.innerHTML = `<p>Main Tasks Complete! Redirecting to Survey…</p>`;
+        timeRemaining = 5;
+
+        const redirectTimer = setInterval(() => {
+            timeRemaining--;
+            if (timeRemaining === 0) {
+                clearInterval(redirectTimer);
+                window.location.href = "https://form.jotform.com/243311500343440";
             }
+        }, 1000);
+    } else {
+        // Standard break message for intermediate levels
+        breakMessage.innerHTML = `<p>Next round starting in <span id="break-timer">5</span> seconds...</p>`;
+        const breakTimerElement = document.getElementById('break-timer');
+        breakTimerElement.textContent = timeRemaining;
+
+        const breakTimer = setInterval(() => {
+            timeRemaining--;
+            breakTimerElement.textContent = timeRemaining;
+
+            if (timeRemaining === 0) {
+                clearInterval(breakTimer);
+                breakMessage.style.display = 'none';
+                callback();
+            }
+        }, 1000);
+    }
+}
+
 function nextLevel() {
     level++;
     sequenceLength = 1; // Reset sequence length for the new level
@@ -445,8 +449,8 @@ function nextLevel() {
     } else if (level === 3) {
         gridSize = 5; // Increase grid size for level 3
     } else if (level > 3) {
-        // Redirect to form if all levels are completed
-        window.location.href = "https://form.jotform.com/243311500343440";
+        // Show final message and redirect to the survey
+        showBreakScreen(() => {});
         return;
     }
 
@@ -456,6 +460,7 @@ function nextLevel() {
     updateTaskHeader();
     nextRound();
 }
+
 
 
 
@@ -517,6 +522,33 @@ function saveTaskIIIResult() {
         startGame(); // Begin the game
     });
 });
+
+ function checkPlayerSequence() {
+    let isCorrect = true;
+
+    // Compare player's input with the generated sequence
+    for (let i = 0; i < sequence.length; i++) {
+        if (playerSequence[i] !== sequence[i]) {
+            isCorrect = false;
+            break;
+        }
+    }
+
+    // Show "Correct!" or "Wrong!" message
+    if (isCorrect) {
+        updateMessage("Correct! 🙂");
+    } else {
+        updateMessage("Wrong! 🙁");
+    }
+
+    // Always move to the next round after showing the message
+    setTimeout(() => {
+        nextRound(); // Progress to the next round
+    }, 1000);
+
+    playerSequence = []; // Reset the player's input
+}
+
 </script>
 
     </body>

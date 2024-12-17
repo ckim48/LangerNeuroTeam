@@ -423,20 +423,30 @@ function showBreakScreen(callback) {
     const breakMessage = document.getElementById('break-message');
 
     if (currentLevel >= blockLevels.length) {
-        // Display "Task Complete" after the final level
-        breakMessage.innerHTML = `<p>Task Complete! Redirecting to Task 3...</p>`;
+        // Final round completed - show break before Task 3
+        breakMessage.innerHTML = `<p>Task Complete! Taking a short break before moving to Task 3...</p>`;
         breakMessage.style.display = 'flex';
 
-        // Redirect after 3 seconds
-        setTimeout(() => {
-            breakMessage.style.display = 'none';
-            clearTimeout(timeoutId);
-            const totalScore = score;
-            const avgResponseTime = calculateAverage(goTrialResponseTimes);
-            sendTask2Result({ totalScore, avgResponseTime });
-        }, 3000);
+        let timeRemaining = 5; // Break duration before moving to Task 3
+        const breakTimerElement = document.createElement('span');
+        breakMessage.querySelector('p').appendChild(breakTimerElement);
+
+        const breakTimer = setInterval(() => {
+            breakTimerElement.textContent = ` Redirecting in ${timeRemaining--} seconds...`;
+            if (timeRemaining < 0) {
+                clearInterval(breakTimer);
+                breakMessage.style.display = 'none';
+                isBreakActive = false;
+
+                // Send results and redirect
+                const totalScore = score;
+                const avgResponseTime = calculateAverage(goTrialResponseTimes);
+                sendTask2Result({ totalScore, avgResponseTime });
+            }
+        }, 1000);
+
     } else {
-        // Show break message for intermediate levels
+        // Intermediate rounds: show standard break message
         breakMessage.innerHTML = `<p>Next round starting in <span id="break-timer">5</span> seconds...</p>`;
         breakMessage.style.display = 'flex';
 
@@ -457,6 +467,7 @@ function showBreakScreen(callback) {
         }, 1000);
     }
 }
+
 
 function calculateAverage(times) {
     const total = times.reduce((acc, time) => acc + time, 0);

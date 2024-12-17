@@ -621,40 +621,28 @@ function showBreakScreen(callback) {
     mainContent.style.pointerEvents = 'none';
     breakMessage.style.display = 'flex';
 
-    // Check if Task 1 is complete
-    if (currentQuestion === 33) {
-        // Display Task 1 complete message
-        breakMessage.innerHTML = `
-            <p>Task 1 Complete! Redirecting to Task 2...</p>
-        `;
+    let timeRemaining = 5;
 
-        // Redirect after 3 seconds
-        setTimeout(() => {
+    // Update the content dynamically and capture the new reference
+    breakMessage.innerHTML = `
+        <p>Next round starting in <span id="break-timer">${timeRemaining}</span> seconds...</p>
+    `;
+
+    const breakTimerElement = document.getElementById('break-timer'); // Get the new reference
+
+    const breakTimer = setInterval(() => {
+        timeRemaining--;
+        breakTimerElement.textContent = timeRemaining; // Update the span's content dynamically
+
+        if (timeRemaining === 0) {
+            clearInterval(breakTimer);
             breakMessage.style.display = 'none';
             mainContent.style.pointerEvents = 'auto';
-            sendScoreData(); // Save the score and navigate to Task 2
-        }, 3000);
-    } else {
-        // Display Next round timer
-        let timeRemaining = 5;
-        const breakTimerElement = document.getElementById('break-timer');
-        breakMessage.innerHTML = `
-            <p>Next round starting in <span id="break-timer">${timeRemaining}</span> seconds...</p>
-        `;
-
-        const breakTimer = setInterval(() => {
-            timeRemaining--;
-            breakTimerElement.textContent = timeRemaining;
-
-            if (timeRemaining === 0) {
-                clearInterval(breakTimer);
-                breakMessage.style.display = 'none';
-                mainContent.style.pointerEvents = 'auto';
-                callback(); // Call the provided callback function after the break
-            }
-        }, 1000);
-    }
+            callback(); // Call the provided callback function after the break
+        }
+    }, 1000);
 }
+
 
 
 function animateMainScene() {
