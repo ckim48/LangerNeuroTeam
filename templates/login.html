@@ -62,14 +62,14 @@
             <h1 class="text-center">Login</h1>
             <div class="card-body">
                 <form method="POST" action="/login">
-                    <input class="form-control mb-3" placeholder="Username" name="username">
+                    <input class="form-control mb-3" placeholder="Prolific/Email" name="username">
                     <input class="form-control mb-3" type="password" placeholder="Password" name="password">
                     {% with messages = get_flashed_messages() %}
                         {% if messages %}
                             <p>{{messages[0]}}</p>
                         {% endif %}
                     {% endwith %}
-                    <a href="{{url_for('register')}}">Register for a new account</a>
+                    <a class="ms-3" href="{{url_for('register')}}">Register for a new account</a>
                     <button type="submit" class="btn btn-login">Login</button>
                 </form>
             </div>
