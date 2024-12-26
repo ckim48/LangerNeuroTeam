@@ -156,10 +156,11 @@
         <p>To participate in our study, please login and complete the assigned tasks.</p>
 
 {% if isLogin %}
-    <a href="{{ url_for('start_task') }}" class="btn btn-danger btn-danger2">Start Task</a>
+    <a href="{{ url_for('start_task') }}" class="btn btn-danger btn-danger2 me-1">Start Task</a>
 {% else %}
-    <a class="learn-btn me-2" href="{{ url_for('register') }}">Create My Account</a>
+    <a class="btn btn-danger btn-danger2 me-1" href="{{ url_for('register') }}">Create My Account</a>
 {% endif %}
+            <a data-aos="fade-up" data-aos-duration="1000" data-aos-delay="1000" href="#about" class="btn btn-danger btn-danger2 ms-1">Read More</a>
 
     </div>
 </section>
